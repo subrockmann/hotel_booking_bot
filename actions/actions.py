@@ -10,6 +10,13 @@ from rasa_sdk import Tracker, ValidationAction, FormValidationAction
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 
+from datetime import datetime as dt
+
+def get_date(time):
+    time_object = dt.strptime(time, "%Y-%m-%dT%H:%M:%S.%f%z")
+    date = str(time_object.date())
+    return date
+
 
 class ValidateStayForm(FormValidationAction):
     def name(self) -> Text:
@@ -25,11 +32,11 @@ class ValidateStayForm(FormValidationAction):
         """Validate checkin_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            return {"checkin_date": slot_value["from"]}
+            return {"checkin_date": get_date(slot_value["from"])}
             #return {"checkin_date": slot_value.capitalize()}
         else:
             # validation failed, set this slot to None
-            return {"checkin_date": slot_value}
+            return {"checkin_date": get_date(slot_value)}
 
 # This is a simple example for a custom action which utters "Hello World!"
 
