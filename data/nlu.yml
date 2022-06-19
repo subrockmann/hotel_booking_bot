@@ -64,3 +64,27 @@ nlu:
     - you need to know my name
     - do you know my name?
     - do you need my name
+
+- intent: inform_email
+  examples: |
+    - my email is [Elizabeth@yahoo.com](email)
+    - It is [Drew@Mccarthy.com](email)
+    - [Ebony@gmail.com](email)
+    - [J_Herrera@gmail.com](email)
+    - it's [R_Iuliucci@yahoo.com](email)
+    - it's [Shannon.Adelman@Hurt.com](email)
+    - mail: [Geneva.Favors@yahoo.com](email)
+    - maybe then instead [James@Anast](email)
+    - my business mail is [s_Dibenedetto@Simpson.net](email)
+    - my email is [Carole@Hart.com](email)
+    - my email is [Elinor_Stock@Higgenbotham.com](email)
+    - my email is [K_Spivey@yahoo.com](email)
+    - my email is [Kelly@Coulter.net](email)
+    - my email is [M_Jones@Luna.com](email)
+    - my email is [Mia_Gainey@gmail.com](email)
+    - my email is [S_Calderon@Cofield.com](email)
+    - my email is [Virginia@Brown.com](email)
+    - my emayl is [V_Comley@Nelson.com](email)
+    - ok it's [Hee@yahoo.com](email)
+    - ok its [P_Simpkins@Suehs.com](email)
+    - here is my email: [Marcus.Miller@yahoo.com](email)

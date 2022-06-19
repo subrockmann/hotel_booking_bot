@@ -7,6 +7,12 @@ intents:
   - deny
   - bot_challenge
   - provide_names
+  - inform_email
+  - supply_contact_info
+
+entities:
+  - email
+  - name
 
 responses:
   utter_greet:
@@ -28,6 +34,18 @@ responses:
   - text: Thanks for providing your name.
   utter_name_values:
   - text: Thank you {first_name} {last_name} for providing your name!
+
+# EMAIL
+  utter_ask_email:
+  - text: Can you please provide me your email address?
+  utter_email:
+  - text: Thank you for providing {email} as your preferred email address.
+  utter_confirmationemail:
+  - text: We sent a confirmation email to {email}.
+  utter_explain_email:
+  - text: We need your email to contact you afterwards. Otherwise, we cannot help you with your request.
+  utter_no_email:
+  - text: Hmm, I'm not sure that {email} is a valid email, please make sure to include the full address 😅.
 
 session_config:
   session_expiration_time: 60
@@ -53,9 +71,25 @@ slots:
       - active_loop: name_form
         requested_slot: last_name
 
+  email:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: email
+  name:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: name
 
 forms:
   name_form:
     required_slots:
     - first_name
     - last_name
+
+  email_form:
+    required_slots:
+    - email
