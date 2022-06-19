@@ -48,3 +48,20 @@ rules:
 #   - slot_was_set: 
 #     - requested_slot: null
 #   - action: utter_email
+
+# Stay form
+- rule: Activate stay_form
+  steps:
+  - intent: ask_availability
+  - action: stay_form
+  - active_loop: stay_form
+
+- rule: Submit stay_form
+  condition: 
+  - active_loop: stay_form
+  steps:
+  - action: stay_form
+  - active_loop: null
+  - slot_was_set: 
+    - requested_slot: null
+  - action: utter_stay_form

@@ -8,11 +8,15 @@ intents:
   - bot_challenge
   - provide_names
   - inform_email
+  - ask_availability
   - supply_contact_info
 
 entities:
   - email
   - name
+  - num_guests
+  - time
+  - number
 
 responses:
   utter_greet:
@@ -41,11 +45,22 @@ responses:
   utter_email:
   - text: Thank you for providing {email} as your preferred email address.
   utter_confirmationemail:
-  - text: We sent a confirmation email to {email}.
+  - text: We have sent a confirmation email to {email}.
   utter_explain_email:
   - text: We need your email to contact you afterwards. Otherwise, we cannot help you with your request.
   utter_no_email:
   - text: Hmm, I'm not sure that {email} is a valid email, please make sure to include the full address 😅.
+
+# Number of guests
+  utter_ask_num_guests:
+  - text: For how many people do you need accomodations?
+  utter_num_guests:
+  - text: I will check the availability for {num_guests} guests.  ## might result in unintended conversations
+
+# Stay information
+  utter_stay_form:
+  - text: I will check the availability for {num_guests} guests from x to y.
+
 
 session_config:
   session_expiration_time: 60
@@ -77,12 +92,23 @@ slots:
     mappings:
     - type: from_entity
       entity: email
+
   name:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: name
+
+  num_guests:
+    type: float ## "any" must be used in conjunction with custom slot mappings
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+      - active_loop: stay_form
+        requested_slot: num_guests
 
 forms:
   name_form:
@@ -93,3 +119,7 @@ forms:
   email_form:
     required_slots:
     - email
+
+  stay_form:
+    required_slots:
+    - num_guests

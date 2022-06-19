@@ -88,3 +88,11 @@ nlu:
     - ok it's [Hee@yahoo.com](email)
     - ok its [P_Simpkins@Suehs.com](email)
     - here is my email: [Marcus.Miller@yahoo.com](email)
+
+- intent: ask_availability
+  examples: |
+    - I need a room for tonight.
+    - I want to stay at your hotel next week.
+    - Do you have rooms available for the weekend?
+    - Can we stay at your hotel with 10 people?
+    - Can I book a single room for Friday night?
