@@ -4,6 +4,32 @@
 # See this guide on how to implement these action:
 # https://rasa.com/docs/rasa/custom-actions
 
+from typing import Text, Any, Dict
+
+from rasa_sdk import Tracker, ValidationAction, FormValidationAction
+from rasa_sdk.executor import CollectingDispatcher
+from rasa_sdk.types import DomainDict
+
+
+class ValidateStayForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_stay_form"
+
+    def validate_checkin_date(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+        ) -> Dict[Text, Any]:
+        """Validate checkin_date."""
+        if isinstance(slot_value, dict):
+            # DucklingEntityExtractor returns a dict when it extracts a date range
+            return {"checkin_date": slot_value["from"]}
+            #return {"checkin_date": slot_value.capitalize()}
+        else:
+            # validation failed, set this slot to None
+            return {"checkin_date": slot_value}
 
 # This is a simple example for a custom action which utters "Hello World!"
 
