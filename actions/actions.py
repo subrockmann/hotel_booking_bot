@@ -32,11 +32,30 @@ class ValidateStayForm(FormValidationAction):
         """Validate checkin_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            return {"checkin_date": get_date(slot_value["from"])}
+            return [{"checkin_date": get_date(slot_value["from"])}, 
+                {"checkout_date": get_date(slot_value["to"])}]
             #return {"checkin_date": slot_value.capitalize()}
         else:
             # validation failed, set this slot to None
             return {"checkin_date": get_date(slot_value)}
+
+    def validate_checkout_date(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+        ) -> Dict[Text, Any]:
+        """Validate checkout_date."""
+        if isinstance(slot_value, dict):
+            # DucklingEntityExtractor returns a dict when it extracts a date range
+            [{"checkin_date": get_date(slot_value["from"])}, 
+                {"checkout_date": get_date(slot_value["to"])}]
+
+            #return {"checkin_date": slot_value.capitalize()}
+        else:
+            # validation failed, set this slot to None
+            return {"checkout_date": get_date(slot_value)}
 
 # This is a simple example for a custom action which utters "Hello World!"
 

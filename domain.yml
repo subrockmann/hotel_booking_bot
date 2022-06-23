@@ -10,6 +10,7 @@ intents:
   - inform_email
   - ask_availability
   - supply_contact_info
+  - ask_breakfast_price
 
 actions:
   - validate_stay_form
@@ -62,9 +63,17 @@ responses:
 
 # Stay information
   utter_stay_form:
-  - text: I will check the availability for {num_guests} guests from {checkin_date} to y.
+  - text: I will check the availability for {num_guests} guests from {checkin_date} to {checkout_date}.
   utter_ask_checkin_date:
   - text: Which date to you want to arrive at our hotel?
+  utter_ask_checkout_date:
+  - text: On which day do you expect to checkout?
+
+# breakfast information
+  utter_breakfast_price:
+  - text: The price for the breakfast buffet is € 19.00 per person.
+  utter_ask_add_breakfast:
+  - text: Do you want to add breakfast to your booking?
 
 
 session_config:
@@ -116,14 +125,25 @@ slots:
         requested_slot: num_guests
   
   checkin_date:
-    type: text ## "any" must be used in conjunction with custom slot mappings
+    type: text 
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: time
-      # conditions:
-      # - active_loop: stay_form
-      #   requested_slot: num_guests
+      intent: ask_availability
+      #conditions:
+      #- active_loop: stay_form
+      #  requested_slot: checkin_date
+
+  checkout_date:
+    type: text 
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: time
+      conditions:
+        - active_loop: stay_form
+          requested_slot: checkout_date
 
 forms:
   name_form:
@@ -140,3 +160,4 @@ forms:
     required_slots:
     - num_guests
     - checkin_date
+    - checkout_date

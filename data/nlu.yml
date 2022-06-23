@@ -96,3 +96,13 @@ nlu:
     - Do you have rooms available for the weekend?
     - Can we stay at your hotel with 10 people?
     - Can I book a single room for Friday night?
+
+- intent: ask_breakfast_price
+  examples: |
+    - Do you have complimentary breakfast?
+    - Is the breakfast included in the room price?
+    - How much does the breakfast cost?
+    - Is breakfast included?
+    - What does the breakfast cost
+    - Is breakfast free
+    

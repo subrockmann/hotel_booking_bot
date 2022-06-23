@@ -65,3 +65,8 @@ rules:
   - slot_was_set: 
     - requested_slot: null
   - action: utter_stay_form
+
+- rule: Answer breakfast price
+  steps:
+  - intent: ask_breakfast_price
+  - action: utter_breakfast_price
