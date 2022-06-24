@@ -9,11 +9,18 @@ intents:
   - provide_names
   - inform_email
   - ask_availability
+  #- inform_num_nights
+  - inform_room_type
   - supply_contact_info
   - ask_breakfast_price
+  
 
 actions:
   - validate_stay_form
+  #- validate_email
+  - action_check_rooms
+  - action_validate_slot_mappings # to run single slot validation
+  - validate_checkin_date
 
 entities:
   - email
@@ -21,6 +28,10 @@ entities:
   - num_guests
   - time
   - number
+  - single_room
+  - double_room
+  - room_type
+  - amount
 
 responses:
   utter_greet:
@@ -144,6 +155,14 @@ slots:
       conditions:
         - active_loop: stay_form
           requested_slot: checkout_date
+
+  num_nights:
+    type: float ## "any" must be used in conjunction with custom slot mappings
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: number
+      intent: inform_num_nights
 
 forms:
   name_form:
