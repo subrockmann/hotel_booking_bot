@@ -10,9 +10,9 @@ intents:
   - inform_email
   - ask_availability
   #- inform_num_nights
-  - inform_room_type
   - supply_contact_info
   - ask_breakfast_price
+  - inform_room_type
   
 
 actions:
@@ -135,6 +135,14 @@ slots:
       - active_loop: stay_form
         requested_slot: num_guests
   
+  checkin_date_dummy: # only needed to grab information during the intent
+    type: text 
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: time
+      intent: ask_availability
+
   checkin_date:
     type: text 
     influence_conversation: true
@@ -142,9 +150,10 @@ slots:
     - type: from_entity
       entity: time
       intent: ask_availability
-      #conditions:
-      #- active_loop: stay_form
-      #  requested_slot: checkin_date
+      conditions:
+      - active_loop: stay_form
+        requested_slot: checkin_date
+    - type: custom
 
   checkout_date:
     type: text 
@@ -160,9 +169,9 @@ slots:
     type: float ## "any" must be used in conjunction with custom slot mappings
     influence_conversation: true
     mappings:
-    - type: from_entity
-      entity: number
-      intent: inform_num_nights
+    - type: custom
+    #  entity: number
+    #  intent: inform_num_nights
 
 forms:
   name_form:

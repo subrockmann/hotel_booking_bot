@@ -36,8 +36,8 @@ class ValidateStayForm(FormValidationAction):
         """Validate checkin_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            return [{"checkin_date": get_date(slot_value["from"])}, 
-                {"checkout_date": get_date(slot_value["to"])}]
+            return [{"checkin_date": get_date(slot_value.get("from"))}, 
+                {"checkout_date": get_date(slot_value.get("to"))}]
             #return {"checkin_date": slot_value.capitalize()}
         else:
             # validation failed, set this slot to None
@@ -53,8 +53,8 @@ class ValidateStayForm(FormValidationAction):
         """Validate checkout_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            [{"checkin_date": get_date(slot_value["from"])}, 
-                {"checkout_date": get_date(slot_value["to"])}]
+            [{"checkin_date": get_date(slot_value.get("from"))}, 
+                {"checkout_date": get_date(slot_value.get("to"))}]
 
             #return {"checkin_date": slot_value.capitalize()}
         else:
@@ -62,22 +62,32 @@ class ValidateStayForm(FormValidationAction):
             return {"checkout_date": get_date(slot_value)}
 
 class ValidatePredefinedSlots(ValidationAction):
-    def validate_checkin_date(
+    def validate_checkin_date_dummy(
         self,
         slot_value: Any,
         dispatcher: CollectingDispatcher,
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
-        """Validate checkin_date."""
+        """Validate checkin_date_dummy."""
+        # DucklingEntityExtractor returns a dict when it extracts a date range
         if isinstance(slot_value, dict):
-            # DucklingEntityExtractor returns a dict when it extracts a date range
-            return [{"checkin_date": get_date(slot_value["from"])}, 
-                {"checkout_date": get_date(slot_value["to"])}]
-            #return {"checkin_date": slot_value.capitalize()}
+            print("Is dict:")
+            #tracker.set_slot("checkout_date", get_date(slot_value.get("to")))  ### FIX: 'Tracker' object has no attribute 'set_slot'
+            #SlotSet("checkout_date", get_date(slot_value.get("to")))  ### FIX: This crashes 
+            
+            return {"checkin_date": get_date(slot_value.get("from"))}
+            #return {"checkout_date": get_date(slot_value.get("to"))}
+            #return {"checkin_date": get_date(slot_value.get("from")), 
+            #       "checkout_date": get_date(slot_value.get("to"))}
+            #return [SlotSet("checkin_date", get_date(slot_value.get("from"))),
+            #        SlotSet("checkout_date", get_date(slot_value.get("to")))]
+
         else:
-            # validation failed, set this slot to None
+            # DucklingEntityExtractor returns a string for a single date/time
+            print("is no dict")
             return {"checkin_date": get_date(slot_value)}
+            #return SlotSet("checkin_date", get_date(slot_value))
 
 
 # class EmailValidation(ValidationAction):
