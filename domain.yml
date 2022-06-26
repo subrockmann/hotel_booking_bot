@@ -6,6 +6,7 @@ intents:
   - affirm
   - deny
   - bot_challenge
+  - inform
   - provide_names
   - inform_email
   - ask_availability
@@ -17,7 +18,7 @@ intents:
 
 actions:
   - validate_stay_form
-  #- validate_email
+  - validate_email_form
   - action_check_rooms
   - action_validate_slot_mappings # to run single slot validation
   - validate_checkin_date

@@ -12,10 +12,24 @@ rules:
   - intent: bot_challenge
   - action: utter_iamabot
 
+### Email form
 - rule: Utter the email when provided by the user
   steps:
   - intent: inform_email
+  - action: email_form
+  - active_loop: email_form
+
+- rule: Submit email_form
+  condition: 
+  - active_loop: email_form
+  steps:
+  - action: email_form
+  - active_loop: null
+  - slot_was_set: 
+    - requested_slot: null
   - action: utter_email
+
+### Name form
 - rule: Activate name_form
   steps:
   - intent: provide_names
@@ -32,22 +46,8 @@ rules:
     - requested_slot: null
   - action: utter_name_values
 
-# EMAIL
-# - rule: Activate email_form
-#   steps:
-#   - intent: inform_email
-#   - action: email_form
-#   - active_loop: email_form
 
-# - rule: Submit email_form
-#   condition: 
-#   - active_loop: email_form
-#   steps:
-#   - action: email_form
-#   - active_loop: null
-#   - slot_was_set: 
-#     - requested_slot: null
-#   - action: utter_email
+
 
 # Stay form
 - rule: Activate stay_form

@@ -58,6 +58,18 @@ nlu:
     - am I talking to a bot?
     - am I talking to a human?
 
+- intent: inform
+  examples: |
+    - for ten people
+    - 2 people
+    - for three people
+    - just one person
+    - book for seven people
+    - 2 please
+    - nine people
+    - for 3 nights
+    - 1 night
+
 - intent: provide_names
   examples: |
     - i want to give you my name
