@@ -78,27 +78,40 @@ class ValidateEmailForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
         ) -> Dict[Text, Any]:
-        """Validate email."""
-        try: 
-            # Validate & take the normalized form of the email
-            # address for all logic beyond this point (especially
-            # before going to a database query where equality
-            # does not take into account normalization).
-            entities = tracker.latest_message['entities']
-            print(entities)
-            #email = validate_email(entities.get("email")).email
-            #email = validate_email(slot_value).email
-            #dispatcher.utter_template("utter_email", tracker)
-            dispatcher.utter_message(response="utter_email")
-            return {"email": entities} #email}
-        except EmailNotValidError as e:
-            # email is not valid, exception message is human-readable
-            print(str(e))
-            dispatcher.utter_message(text= "Validate Email Form") ### TODO
-            dispatcher.utter_message(response="utter_no_email")
-            #dispatcher.utter_template("utter_no_email", tracker)
-            dispatcher.utter_message(text=str(e))
-            return {"email": None}
+        """"
+        check if an email entity was extracted
+        """
+        entities = tracker.latest_message['entities']
+        for e in entities:
+            if e.get("entity")== "email":
+                email = e.get("value")
+                print (f"Email was provided: {email}")
+            
+                """Validate email."""
+                try: 
+                    # Validate & take the normalized form of the email
+                    # address for all logic beyond this point (especially
+                    # before going to a database query where equality
+                    # does not take into account normalization).
+
+                    #email = validate_email(entities.get("email")).email
+                    #email = validate_email(slot_value).email
+                    #print(email)
+                    dispatcher.utter_template("utter_email", tracker)
+                    return {"email": email}
+
+                except EmailNotValidError as e:
+                    # email is not valid, exception message is human-readable
+                    print(str(e))
+                    dispatcher.utter_template("utter_no_email", tracker)
+                    dispatcher.utter_message(text=str(e))
+                    dispatcher.utter_message(text= "Validate predefined slots")
+                    return {"email": None}
+                    
+            else:
+                print("no email")
+                return {"email": None}
+  
 
 
 class ValidatePredefinedSlots(ValidationAction):
@@ -136,25 +149,40 @@ class ValidatePredefinedSlots(ValidationAction):
             tracker: Tracker,
             domain: DomainDict,
             ) -> Dict[Text, Any]:
-            """Validate email."""
-            try: 
-                # Validate & take the normalized form of the email
-                # address for all logic beyond this point (especially
-                # before going to a database query where equality
-                # does not take into account normalization).
-                entities = tracker.latest_message['entities']
-                print(entities)
-                #email = validate_email(entities.get("email")).email
-                #email = validate_email(slot_value).email
-                #print(email)
-                dispatcher.utter_template("utter_email", tracker)
-            except EmailNotValidError as e:
-                # email is not valid, exception message is human-readable
-                print(str(e))
-                dispatcher.utter_template("utter_no_email", tracker)
-                dispatcher.utter_message(text=str(e))
-                dispatcher.utter_message(text= "Validate predefined slots")
-                return {"email": None}
+
+            """"
+            check if an email entity was extracted
+            """
+            entities = tracker.latest_message['entities']
+            for e in entities:
+                if e.get("entity")== "email":
+                    email = e.get("value")
+                    print (f"Email was provided: {email}")
+                
+                    """Validate email."""
+                    try: 
+                        # Validate & take the normalized form of the email
+                        # address for all logic beyond this point (especially
+                        # before going to a database query where equality
+                        # does not take into account normalization).
+
+                        #email = validate_email(entities.get("email")).email
+                        #email = validate_email(slot_value).email
+                        #print(email)
+                        dispatcher.utter_template("utter_email", tracker)
+                        return {"email": email}
+
+                    except EmailNotValidError as e:
+                        # email is not valid, exception message is human-readable
+                        print(str(e))
+                        dispatcher.utter_template("utter_no_email", tracker)
+                        dispatcher.utter_message(text=str(e))
+                        dispatcher.utter_message(text= "Validate predefined slots")
+                        return {"email": None}
+                    
+                else:
+                    print("no email")
+                    return {"email": None}
 
 
 
