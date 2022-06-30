@@ -16,8 +16,9 @@ rules:
 - rule: Utter the email when provided by the user
   steps:
   - intent: inform_email
-  - action: email_form
-  - active_loop: email_form
+  - action: action_validate_email
+#  - action: email_form
+#  - active_loop: email_form
 
 - rule: Submit email_form
   condition: 

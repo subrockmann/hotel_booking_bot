@@ -19,6 +19,7 @@ intents:
 actions:
   - validate_stay_form
   - validate_email_form
+  - action_validate_email
   - action_check_rooms
   - action_validate_slot_mappings # to run single slot validation
   - validate_checkin_date
@@ -116,8 +117,9 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-    - type: from_entity
-      entity: email
+    - type: custom 
+    #- type: from_entity
+      #entity: email  ### does this have to be custom?
 
   name:
     type: text
