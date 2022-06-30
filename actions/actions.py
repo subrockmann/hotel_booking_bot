@@ -11,7 +11,8 @@ from typing import Any, Text, Dict, List
 from rasa_sdk import Action, Tracker, ValidationAction, FormValidationAction
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
-#from rasa_sdk.events import SlotSet
+
+
 from rasa_sdk.events import (
     SlotSet,
     UserUtteranceReverted,
@@ -20,9 +21,8 @@ from rasa_sdk.events import (
 )
 
 from datetime import datetime as dt
-from email_validator import validate_email #as val_email
+from email_validator import validate_email, EmailNotValidError
 
-from email_validator import EmailNotValidError
 
 def get_date(time):
     # check if the date needs to be cleaned up
@@ -44,14 +44,16 @@ class ValidateStayForm(FormValidationAction):
         dispatcher: CollectingDispatcher,
         tracker: Tracker,
         domain: DomainDict,
-        ) -> Dict[Text, Any]:
+    ) -> Dict[Text, Any]:
         """Validate checkin_date."""
         if isinstance(slot_value, dict):
             print("valdiate Stay form - checkin date - dict")
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            return [{"checkin_date": get_date(slot_value.get("from"))}, 
-                {"checkout_date": get_date(slot_value.get("to"))}]
-            #return {"checkin_date": slot_value.capitalize()}
+            return [
+                {"checkin_date": get_date(slot_value.get("from"))},
+                {"checkout_date": get_date(slot_value.get("to"))},
+            ]
+            # return {"checkin_date": slot_value.capitalize()}
         else:
             # validation failed, set this slot to None
             print("valdiate Stay form - checkin date -  no dict")
@@ -63,17 +65,20 @@ class ValidateStayForm(FormValidationAction):
         dispatcher: CollectingDispatcher,
         tracker: Tracker,
         domain: DomainDict,
-        ) -> Dict[Text, Any]:
+    ) -> Dict[Text, Any]:
         """Validate checkout_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            [{"checkin_date": get_date(slot_value.get("from"))}, 
-                {"checkout_date": get_date(slot_value.get("to"))}]
+            [
+                {"checkin_date": get_date(slot_value.get("from"))},
+                {"checkout_date": get_date(slot_value.get("to"))},
+            ]
 
-            #return {"checkin_date": slot_value.capitalize()}
+            # return {"checkin_date": slot_value.capitalize()}
         else:
             # validation failed, set this slot to None
             return {"checkout_date": get_date(slot_value)}
+
 
 class ValidateEmailForm(FormValidationAction):
     def name(self) -> Text:
@@ -85,26 +90,26 @@ class ValidateEmailForm(FormValidationAction):
         dispatcher: CollectingDispatcher,
         tracker: Tracker,
         domain: DomainDict,
-        ) -> Dict[Text, Any]:
-        """"
+    ) -> Dict[Text, Any]:
+        """ "
         check if an email entity was extracted
         """
-        entities = tracker.latest_message['entities']
+        entities = tracker.latest_message["entities"]
         for e in entities:
-            if e.get("entity")== "email":
+            if e.get("entity") == "email":
                 email = e.get("value")
-                print (f"Email was provided: {email}")
-            
+                print(f"Email was provided: {email}")
+
                 """Validate email."""
-                try: 
+                try:
                     # Validate & take the normalized form of the email
                     # address for all logic beyond this point (especially
                     # before going to a database query where equality
                     # does not take into account normalization).
 
-                    #email = validate_email(entities.get("email")).email
-                    #email = validate_email(slot_value).email
-                    #print(email)
+                    # email = validate_email(entities.get("email")).email
+                    # email = validate_email(slot_value).email
+                    # print(email)
                     dispatcher.utter_message(response="utter_email")
                     return {"email": email}
 
@@ -113,13 +118,13 @@ class ValidateEmailForm(FormValidationAction):
                     print(str(e))
                     dispatcher.utter_message(response="utter_no_email")
                     dispatcher.utter_message(text=str(e))
-                    dispatcher.utter_message(text= "Validate predefined slots")
+                    dispatcher.utter_message(text="Validate predefined slots")
                     return {"email": None}
-                    
+
             else:
                 print("no email")
                 return {"email": None}
-  
+
 
 '''
 
@@ -199,39 +204,42 @@ class ActionValidateEmail(Action):
     def name(self) -> Text:
         return "action_validate_email"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
 
         """
         check if an email entity was extracted
         """
         try:
-            entities = tracker.latest_message['entities']
-            print(entities)
-            dispatcher.utter_message(text=str(entities))
+            entities = tracker.latest_message["entities"]
+            dispatcher.utter_message(text=str(entities))  # only for debugging purposes
 
             # get the value from the 'email' entity if it has been provided
             for e in entities:
-                if e.get("entity")== "email":
+                if e.get("entity") == "email":
                     email = e.get("value")
-                    print(f"Email was provided: {email}")
+                    # print(f"Email was provided: {email}")
                 else:
-                    print("NO Email was provided")
+                    # print("NO Email was provided")
+                    dispatcher.utter_message(response="utter_no_email")
         except:
             email = None
 
         # validate the email
         try:
             validate_email(email)
-            print(email)
+            # print(email)
         except EmailNotValidError as e:
-            print(e)
+            dispatcher.utter_message(response="utter_no_email")
+            dispatcher.utter_message(text=str(e))
+            # print(e)
             email = None
 
         return [SlotSet("email", email)]
-
 
 
 # class ActionValidateNoEmail(Action):
@@ -254,7 +262,7 @@ class ActionValidateEmail(Action):
 #             if e.get("entity")== "email":
 #                 email = e.get("value")
 #                 print (f"Email was provided: {email}")
-            
+
 #             else:
 #                 pass
 #                 #print("no email")
@@ -263,7 +271,7 @@ class ActionValidateEmail(Action):
 #                 #return [{"email": None}]
 
 #         """Validate email."""
-#         try: 
+#         try:
 #             # Validate & take the normalized form of the email
 #             # address for all logic beyond this point (especially
 #             # before going to a database query where equality
@@ -276,24 +284,24 @@ class ActionValidateEmail(Action):
 #             #return [SlotSet("email", email)]
 #             #return
 #             ## ERROR:
-#             # 2022-06-27 20:54:20 ERROR    rasa.server  - An unexpected error occurred. Error: 'list' object has no attribute 'strip'                
+#             # 2022-06-27 20:54:20 ERROR    rasa.server  - An unexpected error occurred. Error: 'list' object has no attribute 'strip'
 #             #2022-06-27 20:54:20 ERROR    rasa.core.training.interactive  - failed to execute action!
 #             #2022-06-27 20:54:20 ERROR    rasa.core.training.interactive  - An exception occurred while recording messages.
-#             # 
+#             #
 #             #return SlotSet("email", email)
 #             ### Error:
 #             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
 #             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
 #             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored. 
-#             #  
+#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
+#             #
 #             #return {"email": email}
 #             ### Error:
 #             # 2022-06-27 21:03:53 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
 
 #             #return [{"email": email}]
 #             ### Error:
-#             # 2022-06-27 21:10:39 ERROR    rasa_sdk.executor  - Your action 'action_validate_email' returned an action dict without the `event` property. Please use the helpers in `rasa_sdk.events`! Event willbe ignored!      
+#             # 2022-06-27 21:10:39 ERROR    rasa_sdk.executor  - Your action 'action_validate_email' returned an action dict without the `event` property. Please use the helpers in `rasa_sdk.events`! Event willbe ignored!
 
 #         except EmailNotValidError as e:
 #             # email is not valid, exception message is human-readable
@@ -303,7 +311,7 @@ class ActionValidateEmail(Action):
 #             dispatcher.utter_message(text= "Validate predefined slots")
 #             #return [{"email": None}]
 #         return[SlotSet("email", "MickeyMouse")]
-                    
+
 # class ActionCheckRoom(Action):
 #     def name(self) -> Text:
 #         return "action_check_rooms"
