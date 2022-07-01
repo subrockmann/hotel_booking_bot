@@ -17,6 +17,7 @@ rules:
   steps:
   - intent: inform_email
   - action: action_validate_email
+  - action: action_email_or_sms
 #  - action: email_form
 #  - active_loop: email_form
 

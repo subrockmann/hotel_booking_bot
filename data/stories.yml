@@ -8,4 +8,11 @@ stories:
   - action: utter_greet
 
 
-
+- story: confirm by email
+  steps:
+  - intent: confirmation_by_email
+    entities:
+    - contact_channel: "email"
+  - slot_was_set:
+    - contact_channel: "email"  
+  - action: utter_confirmation_by_email

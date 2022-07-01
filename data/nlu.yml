@@ -134,3 +134,22 @@ nlu:
     - What does the breakfast cost
     - Is breakfast free
     
+- intent: confirmation_by_email
+  examples: |
+    - Send the confirmation by [mail]{"entity": "contact_channel"}
+    - confirm by [mail]{"entity": "contact_channel"}
+    - Please, send me the details by [email]{"entity": "contact_channel"}
+    - answer by [mail]{"entity": "contact_channel"}
+    - [email]{"entity": "contact_channel"} confirmation
+    - send an [email]{"entity": "contact_channel"}
+    - Could you send me the booking details by [mail]{"entity": "contact_channel"}?
+
+- intent: confirmation_by_sms
+  examples: |
+    - Send the confirmation by [sms]{"entity": "contact_channel"}
+    - confirm by [text]{"entity": "contact_channel"}
+    - Please, send me the details by [SMS]{"entity": "contact_channel"}
+    - answer by [sms]{"entity": "contact_channel"}
+    - [SMS]{"entity": "contact_channel"} confirmation
+    - send a [text message]{"entity": "contact_channel"}
+    - Could you send me the booking details by [SMS]{"entity": "contact_channel"}?

@@ -14,6 +14,8 @@ intents:
   - supply_contact_info
   - ask_breakfast_price
   - inform_room_type
+  - confirmation_by_email
+  - confirmation_by_sms
   
 
 actions:
@@ -23,6 +25,7 @@ actions:
   - action_check_rooms
   - action_validate_slot_mappings # to run single slot validation
   - validate_checkin_date
+  - action_email_or_sms
 
 entities:
   - email
@@ -34,6 +37,7 @@ entities:
   - double_room
   - room_type
   - amount
+  - contact_channel
 
 responses:
   utter_greet:
@@ -87,6 +91,13 @@ responses:
   - text: The price for the breakfast buffet is € 19.00 per person.
   utter_ask_add_breakfast:
   - text: Do you want to add breakfast to your booking?
+
+# confirmation details
+  utter_confirmation_by_email:
+  - text: We have sent you the confirmation by email.
+
+  utter_confirmation_by_sms:
+  - text: We have sent you the confirmation by SMS.
 
 
 session_config:
@@ -175,6 +186,13 @@ slots:
     - type: custom
     #  entity: number
     #  intent: inform_num_nights
+
+  contact_channel:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: contact_channel
 
 forms:
   name_form:

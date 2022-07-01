@@ -125,9 +125,6 @@ class ValidateEmailForm(FormValidationAction):
                 print("no email")
                 return {"email": None}
 
-
-'''
-
 class ValidatePredefinedSlots(ValidationAction):
     def validate_checkin_date_dummy(
         self,
@@ -197,8 +194,6 @@ class ValidatePredefinedSlots(ValidationAction):
                 else:
                     print("no email")
                     return {"email": None}
-'''
-
 
 class ActionValidateEmail(Action):
     def name(self) -> Text:
@@ -214,6 +209,7 @@ class ActionValidateEmail(Action):
         """
         check if an email entity was extracted
         """
+        email = None
         try:
             entities = tracker.latest_message["entities"]
             dispatcher.utter_message(text=str(entities))  # only for debugging purposes
@@ -229,88 +225,36 @@ class ActionValidateEmail(Action):
         except:
             email = None
 
-        # validate the email
-        try:
-            validate_email(email)
-            # print(email)
-        except EmailNotValidError as e:
+        if email is not None:
+            # validate the email
+            try:
+                validate_email(email)
+                # print(email)
+            except EmailNotValidError as e:
+                dispatcher.utter_message(response="utter_no_email")
+                dispatcher.utter_message(text=str(e))
+                # print(e)
+                email = None
+        else:
             dispatcher.utter_message(response="utter_no_email")
-            dispatcher.utter_message(text=str(e))
-            # print(e)
-            email = None
-
         return [SlotSet("email", email)]
 
+class ActionEmailOrSMS(Action):
+    def name(self) -> Text:
+        return "action_email_or_sms"
 
-# class ActionValidateNoEmail(Action):
-#     def name(self) -> Text:
-#         return "action_validate_no_email"
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-#     def run(self,
-#             dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        #num_guests = tracker.get_slot('num_guests')
+        buttons = [{"payload": '/confirmation_by_email{"contact_channel":"email"}', "title": "Email"},
+            {"payload": '/confirmation_by_sms{"contatct_channel":"sms"}', "title": "SMS"}]
+        
+        dispatcher.utter_message(text="How would you like to receive the booking confirmation?", buttons=buttons)
 
-#         """"
-#         check if an email entity was extracted
-#         """
-#         entities = tracker.latest_message['entities']
-#         print(entities)
-#         dispatcher.utter_message(text=entities)
-#         email = None
-#         for e in entities:
-#             if e.get("entity")== "email":
-#                 email = e.get("value")
-#                 print (f"Email was provided: {email}")
-
-#             else:
-#                 pass
-#                 #print("no email")
-#                 #dispatcher.utter_message(response="utter_no_email")
-#                 #return[SlotSet("email", None)]
-#                 #return [{"email": None}]
-
-#         """Validate email."""
-#         try:
-#             # Validate & take the normalized form of the email
-#             # address for all logic beyond this point (especially
-#             # before going to a database query where equality
-#             # does not take into account normalization).
-
-#             validate_email(email)
-#             print(f"try-statement: {email}")
-#             SlotSet("email", email)
-#             print("After SlotSet")
-#             #return [SlotSet("email", email)]
-#             #return
-#             ## ERROR:
-#             # 2022-06-27 20:54:20 ERROR    rasa.server  - An unexpected error occurred. Error: 'list' object has no attribute 'strip'
-#             #2022-06-27 20:54:20 ERROR    rasa.core.training.interactive  - failed to execute action!
-#             #2022-06-27 20:54:20 ERROR    rasa.core.training.interactive  - An exception occurred while recording messages.
-#             #
-#             #return SlotSet("email", email)
-#             ### Error:
-#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-#             # 2022-06-27 20:59:33 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-#             #
-#             #return {"email": email}
-#             ### Error:
-#             # 2022-06-27 21:03:53 ERROR    rasa_sdk.executor  - Your action's 'action_validate_email' run method returned an invalid event. Event will be ignored.
-
-#             #return [{"email": email}]
-#             ### Error:
-#             # 2022-06-27 21:10:39 ERROR    rasa_sdk.executor  - Your action 'action_validate_email' returned an action dict without the `event` property. Please use the helpers in `rasa_sdk.events`! Event willbe ignored!
-
-#         except EmailNotValidError as e:
-#             # email is not valid, exception message is human-readable
-#             print(str(e))
-#             dispatcher.utter_message(response="utter_no_email")
-#             dispatcher.utter_message(text=str(e))
-#             dispatcher.utter_message(text= "Validate predefined slots")
-#             #return [{"email": None}]
-#         return[SlotSet("email", "MickeyMouse")]
+        return []
 
 # class ActionCheckRoom(Action):
 #     def name(self) -> Text:
