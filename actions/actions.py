@@ -282,15 +282,26 @@ class ActionCalculateNumNights(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        checkin_date = tracker.get_slot('checkin_date')
-        checkout_date = tracker.get_slot('checkout_date')
-        #num_guests = tracker.get_slot('num_guests')
+        date_format = "%Y-%m-%d"
+        checkin_date = dt.strptime(tracker.get_slot('checkin_date'), date_format)
+        checkout_date = dt.strptime(tracker.get_slot('checkout_date'), date_format)
+        num_nights = (checkout_date - checkin_date).days
+
         buttons = [{"payload": "/change_checkout_date", "title": "Change checkout date"}, 
-            {"payload": "/change_checkin_date", "title": "Change checkin date"}]
+            {"payload": "/change_checkin_date", "title": "Change checkin date"},
+            {"payload": "/change_num_guests", "title": "Change number of guests"}] ### FIX probably not used in this context
         
-        dispatcher.utter_message(text=f"Your checkout date {checkout_date} is before the checkin date {checkin_date}. \
+        if int(num_nights) == 0:
+            dispatcher.utter_message(text=f"Your checkout date {checkout_date} and checkin date {checkin_date} are identical. \
             Which date do you want to change?", buttons=buttons)
-        return []
+            return []
+
+        elif int(num_nights) < 0:
+            dispatcher.utter_message(text=f"Your checkout date {checkout_date} is before the checkin date {checkin_date}. \
+            Which date do you want to change?", buttons=buttons)
+            return []
+        else:
+            return [SlotSet("num_nights", num_nights)]
 
 class ActionResetCheckinDate(Action):
     def name(self) -> Text:
@@ -300,7 +311,8 @@ class ActionResetCheckinDate(Action):
             dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkin_date", None)]
+        return [SlotSet("checkin_date", None),
+                SlotSet("num_nights", None)]
 
 class ActionResetCheckoutDate(Action):
     def name(self) -> Text:
@@ -310,7 +322,18 @@ class ActionResetCheckoutDate(Action):
             dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkout_date", None)]
+        return [SlotSet("checkout_date", None),
+        SlotSet("num_nights", None)]
+
+class ActionResetNumGuests(Action):
+    def name(self) -> Text:
+        return "action_reset_num_guests"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        return [SlotSet("num_guests", None)]
 
 
 

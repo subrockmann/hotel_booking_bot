@@ -87,6 +87,13 @@ rules:
   - action: stay_form
   - active_loop: stay_form
 
+- rule: Change number of guests
+  steps:
+  - intent: change_num_guests
+  - action: action_reset_num_guests
+  - action: stay_form
+  - active_loop: stay_form
+
 - rule: Answer breakfast price
   steps:
   - intent: ask_breakfast_price

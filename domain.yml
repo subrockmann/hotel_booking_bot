@@ -12,6 +12,7 @@ intents:
   - ask_availability
   - change_checkin_date
   - change_checkout_date
+  - change_num_guests
   #- inform_num_nights
   - supply_contact_info
   - ask_breakfast_price
@@ -21,14 +22,15 @@ intents:
   
 
 actions:
+  - action_validate_slot_mappings # to run single slot validation
   - validate_stay_form
   - validate_email_form
   - action_validate_email
   - action_check_rooms
-  - action_validate_slot_mappings # to run single slot validation
   - validate_checkin_date
   - action_reset_checkin_date
   - action_reset_checkout_date
+  - action_reset_num_guests
   - action_calculate_num_nights
   - action_email_or_sms
 
