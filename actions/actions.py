@@ -4,6 +4,7 @@
 # See this guide on how to implement these action:
 # https://rasa.com/docs/rasa/custom-actions
 
+import email
 from html import entities
 import re
 from typing import Any, Text, Dict, List
@@ -22,7 +23,10 @@ from rasa_sdk.events import (
 
 from datetime import datetime as dt
 from email_validator import validate_email, EmailNotValidError
+import imp
+import utils
 
+imp.reload(utils)
 
 def get_date(time):
     # check if the date needs to be cleaned up
@@ -253,6 +257,18 @@ class ActionEmailOrSMS(Action):
             {"payload": '/confirmation_by_sms{"contatct_channel":"sms"}', "title": "SMS"}]
         
         dispatcher.utter_message(text="How would you like to receive the booking confirmation?", buttons=buttons)
+
+        ##### EMAIL TESTS
+        subject = 'A test mail sent by Python. It has an attachment.' 
+        content = '''Hello,
+        This is a simple mail.
+        Thank You
+        '''
+        email = tracker.get_slot('email')
+
+        utils.send_email(email, subject, content, )
+        ######
+
 
         return []
 
