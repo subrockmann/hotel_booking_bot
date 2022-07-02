@@ -272,19 +272,61 @@ class ActionEmailOrSMS(Action):
 
         return []
 
-# class ActionCheckRoom(Action):
-#     def name(self) -> Text:
-#         return "action_check_rooms"
 
-#     def run(self,
-#             dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+class ActionCalculateNumNights(Action):
+    def name(self) -> Text:
+        return "action_calculate_num_nights"
 
-#         num_guests = tracker.get_slot('num_guests')
-#         #q = "select * from restaurants where cuisine='{0}' limit 1".format(cuisine)
-#         #result = db.query(q)
-#         message = f"Number of guests: {num_guests}"
-#         dispatcher.utter_message(text=message)
-#         #return [SlotSet("matches", result if result is not None else [])]
-#         return []
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        checkin_date = tracker.get_slot('checkin_date')
+        checkout_date = tracker.get_slot('checkout_date')
+        #num_guests = tracker.get_slot('num_guests')
+        buttons = [{"payload": "/change_checkout_date", "title": "Change checkout date"}, 
+            {"payload": "/change_checkin_date", "title": "Change checkin date"}]
+        
+        dispatcher.utter_message(text=f"Your checkout date {checkout_date} is before the checkin date {checkin_date}. \
+            Which date do you want to change?", buttons=buttons)
+        return []
+
+class ActionResetCheckinDate(Action):
+    def name(self) -> Text:
+        return "action_reset_checkin_date"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        return [SlotSet("checkin_date", None)]
+
+class ActionResetCheckoutDate(Action):
+    def name(self) -> Text:
+        return "action_reset_checkout_date"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        return [SlotSet("checkout_date", None)]
+
+
+
+class ActionCheckRoom(Action):
+    def name(self) -> Text:
+        return "action_check_rooms"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        num_guests = tracker.get_slot('num_guests')
+        #q = "select * from restaurants where cuisine='{0}' limit 1".format(cuisine)
+        #result = db.query(q)
+        message = f"Number of guests: {num_guests}"
+        dispatcher.utter_message(text=message)
+        #return [SlotSet("matches", result if result is not None else [])]
+        return []

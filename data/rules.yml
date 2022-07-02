@@ -12,6 +12,8 @@ rules:
   - intent: bot_challenge
   - action: utter_iamabot
 
+ 
+
 ### Email form
 - rule: Utter the email when provided by the user
   steps:
@@ -66,8 +68,24 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  - action: action_check_rooms
-  - action: utter_stay_form
+  - action: action_calculate_num_nights  
+  #- action: action_check_rooms
+  #- action: utter_stay_form
+
+
+- rule: Change checkin date
+  steps:
+  - intent: change_checkin_date
+  - action: action_reset_checkin_date
+  - action: stay_form
+  - active_loop: stay_form
+
+- rule: Change checkout date
+  steps:
+  - intent: change_checkout_date
+  - action: action_reset_checkout_date
+  - action: stay_form
+  - active_loop: stay_form
 
 - rule: Answer breakfast price
   steps:
