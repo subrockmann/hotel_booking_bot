@@ -3,8 +3,9 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 import os
+import phonenumbers
 
-load_dotenv()  # take environment variables from .env.
+  # take environment variables from .env.
 SENDER_ADDRESS = os.getenv("SENDER_ADDRESS")
 SENDER_EMAIL_PASSWORD = os.getenv("SENDER_EMAIL_PASSWORD")
 SMTP_STRING = os.getenv("SMTP_STRING")
@@ -34,3 +35,9 @@ def send_email(receiver_email, subject, content):
     session.quit()
     print('Mail Sent')
     return
+
+def validate_phone_number(phone_number):
+   phone_num_parsed = phonenumbers.parse(phone_number, None) 
+   valid_phone = phonenumbers.is_possible_number(phone_num_parsed)
+   phone_num_formated = phonenumbers.format_number(phone_num_parsed, phonenumbers.PhoneNumberFormat.E164)
+   return valid_phone, phone_num_formated
