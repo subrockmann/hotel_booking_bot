@@ -50,7 +50,24 @@ rules:
     - requested_slot: null
   - action: utter_name_values
 
+### Mobile number form
+- rule: Activate mobile_number_form
+  steps:
+  # - intent: inform
+  #   entities: 
+  #   - phone-number
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
 
+- rule: Submit mobile_number_form
+  condition: 
+  - active_loop: mobile_number_form
+  steps:
+  - action: mobile_number_form
+  - active_loop: null
+  - slot_was_set: 
+    - requested_slot: null
+  - action: utter_mobile_number
 
 
 # Stay form

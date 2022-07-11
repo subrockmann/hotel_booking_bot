@@ -9,6 +9,7 @@ intents:
   - inform
   - provide_names
   - inform_email
+  - inform_mobile_number
   - ask_availability
   - change_checkin_date
   - change_checkout_date
@@ -30,12 +31,15 @@ actions:
   - validate_checkin_date
   - action_reset_checkin_date
   - action_reset_checkout_date
+  - action_set_checkout_date # should only be called from checkin_date_dummy validation
   - action_reset_num_guests
   - action_calculate_num_nights
   - action_email_or_sms
 
 entities:
   - email
+  - phone-number # provided by duckling
+  - mobile_number
   - name
   - num_guests
   - time
@@ -78,6 +82,14 @@ responses:
   - text: We need your email to contact you afterwards. Otherwise, we cannot help you with your request.
   utter_no_email:
   - text: Hmm, I'm not sure that {email} is a valid email, please make sure to include the full address 😅.
+
+# SMS
+  utter_ask_mobile_number:
+  - text: What is your mobile phone number? Please, provide it in international format '+49 xxx xxx'
+  utter_mobile_number:
+  - text: Thank you for providing {mobile_number} so that we can contact you.
+  utter_confirmation:sms:
+  - text: We have sent a confirmation SMS to {mobile_number}.
 
 # Number of guests
   utter_ask_num_guests:
@@ -138,6 +150,14 @@ slots:
     - type: custom 
     #- type: from_entity
       #entity: email  ### does this have to be custom?
+
+  mobile_number:
+    type: text
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: phone-number
+
 
   name:
     type: text
@@ -211,6 +231,9 @@ forms:
     required_slots:
     - email
 
+  mobile_number_form:
+    required_slots:
+    - mobile_number
 
   stay_form:
     required_slots:

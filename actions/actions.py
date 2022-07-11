@@ -16,6 +16,7 @@ from rasa_sdk.types import DomainDict
 
 from rasa_sdk.events import (
     SlotSet,
+    FollowupAction,
     UserUtteranceReverted,
     ConversationPaused,
     EventType,
@@ -24,7 +25,9 @@ from rasa_sdk.events import (
 from datetime import datetime as dt
 from email_validator import validate_email, EmailNotValidError
 import imp
-import utils
+
+from sqlalchemy import except_
+import actions.utils as utils
 
 imp.reload(utils)
 
@@ -53,14 +56,15 @@ class ValidateStayForm(FormValidationAction):
         if isinstance(slot_value, dict):
             print("valdiate Stay form - checkin date - dict")
             # DucklingEntityExtractor returns a dict when it extracts a date range
+            checkin_date = slot_value.get('to')
+            print(f"Checkin date: {checkin_date}")
+            #SlotSet("checkout_date", get_date(slot_value.get("to")))
             return [
-                {"checkin_date": get_date(slot_value.get("from"))},
-                {"checkout_date": get_date(slot_value.get("to"))},
-            ]
+                {"checkin_date": get_date(slot_value.get("from"))}]
             # return {"checkin_date": slot_value.capitalize()}
         else:
-            # validation failed, set this slot to None
-            print("valdiate Stay form - checkin date -  no dict")
+            # Duckling extractor returns a date
+            #print("valdiate Stay form - checkin date -  no dict")
             return {"checkin_date": get_date(slot_value)}
 
     def validate_checkout_date(
@@ -73,10 +77,7 @@ class ValidateStayForm(FormValidationAction):
         """Validate checkout_date."""
         if isinstance(slot_value, dict):
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            [
-                {"checkin_date": get_date(slot_value.get("from"))},
-                {"checkout_date": get_date(slot_value.get("to"))},
-            ]
+            return {"checkout_date": get_date(slot_value.get("to"))}
 
             # return {"checkin_date": slot_value.capitalize()}
         else:
@@ -143,19 +144,31 @@ class ValidatePredefinedSlots(ValidationAction):
             print(f"Is dict: {slot_value}")
             #tracker.set_slot("checkout_date", get_date(slot_value.get("to")))  ### FIX: 'Tracker' object has no attribute 'set_slot'
             #SlotSet("checkout_date", get_date(slot_value.get("to")))  ### FIX: This crashes 
-            
-            return {"checkin_date": get_date(slot_value.get("from"))}
-            #return {"checkout_date": get_date(slot_value.get("to"))}
-            #return {"checkin_date": get_date(slot_value.get("from")), 
-            #       "checkout_date": get_date(slot_value.get("to"))}
-            #return [SlotSet("checkin_date", get_date(slot_value.get("from"))),
-            #        SlotSet("checkout_date", get_date(slot_value.get("to")))]
+            #key = frozenset(slot_value.items())
+            checkin_date = slot_value.get('from')
+            try:
+                checkout_date = slot_value.get('to')
+            except:
+                checkout_date = None
+            print(f"Checkin date: {checkin_date}")
+            SlotSet("checkin_date", checkin_date)
+            print(f"Checkout date: {checkout_date}")
+            SlotSet("checkout_date", checkout_date)
+            FollowupAction("action_set_checkout_date")
+            print("Set slots")
+            #FollowupAction(name="stay_form") # not necessary due to detected intent
+            #SlotSet("checkout_date", get_date(slot_value.get("to")))
+            #return {SlotSet("checkin_date", get_date(slot_value.get("from")))}
+            #return {SlotSet("checkin_date", checkin_date)}
+            return {"checkin_date": get_date(checkin_date)}
 
         else:
             # DucklingEntityExtractor returns a string for a single date/time
             print("is no dict")
+            #SlotSet("checkin_date", get_date(slot_value))
+            #FollowupAction(name="stay_form") # not necessary due to detected intent
             return {"checkin_date": get_date(slot_value)}
-            #return SlotSet("checkin_date", get_date(slot_value))
+
 
     def validate_email(
             self,
@@ -198,6 +211,47 @@ class ValidatePredefinedSlots(ValidationAction):
                 else:
                     print("no email")
                     return {"email": None}
+
+    def validate_mobile_number(
+            self,
+            slot_value: Any,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: DomainDict,
+            ) -> Dict[Text, Any]:
+
+            """"
+            check if a phone number was extracted
+            """
+            entities = tracker.latest_message['entities']
+            for e in entities:
+                if e.get("entity")== "phone-number":
+                    phone = e.get("value")
+                    print (f"Phone was provided: {phone}")
+                
+                    """Validate phone number."""
+                    try: 
+                        # Validat and format the phone number
+                        valid_phone, phone_num_formated = utils.validate_phone_number(phone)
+                        dispatcher.utter_message(text=f"Phone: {phone_num_formated} is {valid_phone}")
+                        if valid_phone:
+                            return {"mobile_number": phone_num_formated}
+                        else:
+                            dispatcher.utter_message(text=f"Phone: {phone_num_formated} is not a valid number.")
+                            FollowupAction(name="mobile_number_form")  #### Check if this works
+                            return{"mobile_number": None}
+                    except:
+                        print("validation not failed")
+                        dispatcher.utter_message(text=f"Unfortunately we could not validate this phone number: {phone_num_formated}.")
+                        FollowupAction(name="mobile_number_form")
+                        return {"mobile_number": None}
+
+                else:
+                    print("no phone number")
+                    dispatcher.utter_message(text=f"Your last message did not contain a valid phone number.")
+                    FollowupAction(name="mobile_number_form")
+                    return {"mobile_number": None}
+
 
 class ActionValidateEmail(Action):
     def name(self) -> Text:
@@ -269,7 +323,6 @@ class ActionEmailOrSMS(Action):
         utils.send_email(email, subject, content, )
         ######
 
-
         return []
 
 
@@ -288,8 +341,8 @@ class ActionCalculateNumNights(Action):
         num_nights = (checkout_date - checkin_date).days
 
         buttons = [{"payload": "/change_checkout_date", "title": "Change checkout date"}, 
-            {"payload": "/change_checkin_date", "title": "Change checkin date"},
-            {"payload": "/change_num_guests", "title": "Change number of guests"}] ### FIX probably not used in this context
+            {"payload": "/change_checkin_date", "title": "Change checkin date"}]
+            #{"payload": "/change_num_guests", "title": "Change number of guests"}] ### FIX probably not used in this context
         
         if int(num_nights) == 0:
             dispatcher.utter_message(text=f"Your checkout date {checkout_date} and checkin date {checkin_date} are identical. \
@@ -302,6 +355,28 @@ class ActionCalculateNumNights(Action):
             return []
         else:
             return [SlotSet("num_nights", num_nights)]
+
+
+
+######################
+class ActionSetCheckoutDate(Action):
+    def name(self) -> Text:
+        return "action_set_checkout_date"
+
+    def run(self,
+            dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        dummy_date = tracker.get_slot('checkin_date_dummy')#dt.strptime(tracker.get_slot('checkout_date'), date_format)
+        try:
+            checkout_date = dummy_date.get('to') # this action should only be called from checkin_date_dummy validation if duckling returns a dict
+            return [SlotSet("checkout_date", get_date(checkout_date)),
+                    SlotSet("checkin_date_dummy", None)]
+        except:
+            checkout_date = None
+        return [SlotSet("checkout_date", checkout_date)]
+
+
 
 class ActionResetCheckinDate(Action):
     def name(self) -> Text:

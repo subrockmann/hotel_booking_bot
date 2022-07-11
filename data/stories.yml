@@ -16,3 +16,13 @@ stories:
   - slot_was_set:
     - contact_channel: "email"  
   - action: utter_confirmation_by_email
+
+- story: tell phone number
+  steps:
+  - intent: inform
+    entities:
+    - phone-number
+  - slot_was_set:
+    - mobile_number: null #None # should this be 'null'
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
