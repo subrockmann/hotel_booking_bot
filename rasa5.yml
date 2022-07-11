@@ -1,0 +1,10 @@
+name: rasa6
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - black
+  #- jupyterlab
+  - python-dotenv
+
