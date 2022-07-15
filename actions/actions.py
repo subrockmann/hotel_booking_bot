@@ -487,8 +487,16 @@ class ActionCheckRoom(Action):
         )
 
         # TODO:  include business logic for validating availabiliy vs. request
-
+        if room_proposal["availability_issue"]== None:
+            message = f"""We can offer you the following rooms:
+            \n Checkin date: {checkin_date}
+            \n Checkout date: {checkout_date}
+            \n {room_proposal["num_single_rooms_available"]} single rooms for {room_proposal["single_room_rate"]} Euros per room per night.
+            """
+            dispatcher.utter_message(text=message)
         # message = f"Number of guests: {num_guests}"
-        message = f"Single room rate: {room_proposal.get('single_room_rate')}"
-        dispatcher.utter_message(text=message)
+        else:
+            #message = f"Single room rate: {room_proposal.get('single_room_rate')}"
+            message = f"There is an availability issue {room_proposal['availability_issue']}"
+            dispatcher.utter_message(text=message)
         return [SlotSet("room_proposal", room_proposal)]
