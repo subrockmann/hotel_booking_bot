@@ -26,3 +26,8 @@ stories:
     - mobile_number: null #None # should this be 'null'
   - action: mobile_number_form
   - active_loop: mobile_number_form
+  
+
+# - story: tell required room types
+#   steps:
+#   - intent: in

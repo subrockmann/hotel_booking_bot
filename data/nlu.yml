@@ -138,7 +138,23 @@ nlu:
     - I want to stay at your hotel next week.
     - Do you have rooms available for the weekend?
     - Can we stay at your hotel with 10 people?
-    - Can I book a single room for Friday night?
+    - Can I book a [single room]{"entity": "room_type", "role":"single_room"} for Friday night?
+    - I need a [single room]{"entity": "room_type", "role":"single_room"} on Tuesday.
+    - 1 [single]{"entity":"room_type", "role": "single_room"} and 2 [doubles]{"entity":"room_type", "role": "double_room"}
+    - 3 [double rooms]{"entity":"room_type", "role": "double_room"}
+    - A [double]{"entity":"room_type", "role": "double_room"}
+    - We want to book 5 [doubles]{"entity": "room_type", "role":"double_room"} and 1 [single]{"entity":"room_type", "role":"single_room"}
+#    # - I need a [room]{"entity": "room_type", "role":"unspecified"} for tonight.
+#    - I want to stay at your hotel next week.
+#    - Do you have [rooms]{"entity": "room_type", "role":"unspecified"} available for the weekend?
+#    - Can we stay at your hotel with 10 people?
+#    - Can I book a [single room]{"entity": "room_type", "role":"single_room"} for Friday night?
+#    - I need a [single room]{"entity": "room_type", "role":"single_room"} on Tuesday.
+#    - 1 [single]{"entity":"room_type", "role": "single_room"} and 2 [doubles]{"entity":"room_type", "role": "double_room"}
+#    - 3 [double rooms]{"entity":"room_type", "role": "double_room"}
+#    - A [double]{"entity":"room_type", "role": "double_room"}
+#    - We want to book 5 [doubles]{"entity": "room_type", "role":"double_room"} and 1 [single]{"entity":"room_type", "role":"single_room"}
+
 
 # - intent: inform_num_nights
 #   examples: |
@@ -148,13 +164,6 @@ nlu:
 #     - We will stay for a week.
 #     - 2 nights
 
-# - intent: inform_room_type
-#   examples: |
-#     - I need a [single room]{"entity":"single_room"}
-#     - 1 [single]{"entity":"single_room", "group":"1"} and 2 [doubles]{"entity":"double_room", "group":"2"}
-#     - 3 [double rooms]{"entity":"double_room"}
-#     - A [double]{"entity":"double_room"}
-#     - We want to book 5 [doubles]{"entity":"double_room", "group":"1"} and 1 [single]{"entity":"single_room", "group":"2"}
 
 - intent: ask_breakfast_price
   examples: |
@@ -164,7 +173,9 @@ nlu:
     - Is breakfast included?
     - What does the breakfast cost
     - Is breakfast free
-    
+    - What is the price for breakfast
+    - How much is breakfast
+
 - intent: confirmation_by_email
   examples: |
     - Send the confirmation by [mail]{"entity": "contact_channel"}

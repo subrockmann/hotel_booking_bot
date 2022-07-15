@@ -31,6 +31,7 @@ import actions.utils as utils
 
 imp.reload(utils)
 
+
 def get_date(time):
     # check if the date needs to be cleaned up
     try:
@@ -56,15 +57,14 @@ class ValidateStayForm(FormValidationAction):
         if isinstance(slot_value, dict):
             print("valdiate Stay form - checkin date - dict")
             # DucklingEntityExtractor returns a dict when it extracts a date range
-            checkin_date = slot_value.get('to')
+            checkin_date = slot_value.get("to")
             print(f"Checkin date: {checkin_date}")
-            #SlotSet("checkout_date", get_date(slot_value.get("to")))
-            return [
-                {"checkin_date": get_date(slot_value.get("from"))}]
+            # SlotSet("checkout_date", get_date(slot_value.get("to")))
+            return [{"checkin_date": get_date(slot_value.get("from"))}]
             # return {"checkin_date": slot_value.capitalize()}
         else:
             # Duckling extractor returns a date
-            #print("valdiate Stay form - checkin date -  no dict")
+            # print("valdiate Stay form - checkin date -  no dict")
             return {"checkin_date": get_date(slot_value)}
 
     def validate_checkout_date(
@@ -130,6 +130,7 @@ class ValidateEmailForm(FormValidationAction):
                 print("no email")
                 return {"email": None}
 
+
 class ValidatePredefinedSlots(ValidationAction):
     def validate_checkin_date_dummy(
         self,
@@ -142,12 +143,12 @@ class ValidatePredefinedSlots(ValidationAction):
         # DucklingEntityExtractor returns a dict when it extracts a date range
         if isinstance(slot_value, dict):
             print(f"Is dict: {slot_value}")
-            #tracker.set_slot("checkout_date", get_date(slot_value.get("to")))  ### FIX: 'Tracker' object has no attribute 'set_slot'
-            #SlotSet("checkout_date", get_date(slot_value.get("to")))  ### FIX: This crashes 
-            #key = frozenset(slot_value.items())
-            checkin_date = slot_value.get('from')
+            # tracker.set_slot("checkout_date", get_date(slot_value.get("to")))  ### FIX: 'Tracker' object has no attribute 'set_slot'
+            # SlotSet("checkout_date", get_date(slot_value.get("to")))  ### FIX: This crashes
+            # key = frozenset(slot_value.items())
+            checkin_date = slot_value.get("from")
             try:
-                checkout_date = slot_value.get('to')
+                checkout_date = slot_value.get("to")
             except:
                 checkout_date = None
             print(f"Checkin date: {checkin_date}")
@@ -156,101 +157,110 @@ class ValidatePredefinedSlots(ValidationAction):
             SlotSet("checkout_date", checkout_date)
             FollowupAction("action_set_checkout_date")
             print("Set slots")
-            #FollowupAction(name="stay_form") # not necessary due to detected intent
-            #SlotSet("checkout_date", get_date(slot_value.get("to")))
-            #return {SlotSet("checkin_date", get_date(slot_value.get("from")))}
-            #return {SlotSet("checkin_date", checkin_date)}
+            # FollowupAction(name="stay_form") # not necessary due to detected intent
+            # SlotSet("checkout_date", get_date(slot_value.get("to")))
+            # return {SlotSet("checkin_date", get_date(slot_value.get("from")))}
+            # return {SlotSet("checkin_date", checkin_date)}
             return {"checkin_date": get_date(checkin_date)}
 
         else:
             # DucklingEntityExtractor returns a string for a single date/time
             print("is no dict")
-            #SlotSet("checkin_date", get_date(slot_value))
-            #FollowupAction(name="stay_form") # not necessary due to detected intent
+            # SlotSet("checkin_date", get_date(slot_value))
+            # FollowupAction(name="stay_form") # not necessary due to detected intent
             return {"checkin_date": get_date(slot_value)}
 
-
     def validate_email(
-            self,
-            slot_value: Any,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: DomainDict,
-            ) -> Dict[Text, Any]:
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> Dict[Text, Any]:
 
-            """"
-            check if an email entity was extracted
-            """
-            entities = tracker.latest_message['entities']
-            for e in entities:
-                if e.get("entity")== "email":
-                    email = e.get("value")
-                    print (f"Email was provided: {email}")
-                
-                    """Validate email."""
-                    try: 
-                        # Validate & take the normalized form of the email
-                        # address for all logic beyond this point (especially
-                        # before going to a database query where equality
-                        # does not take into account normalization).
+        """ "
+        check if an email entity was extracted
+        """
+        entities = tracker.latest_message["entities"]
+        for e in entities:
+            if e.get("entity") == "email":
+                email = e.get("value")
+                print(f"Email was provided: {email}")
 
-                        #email = validate_email(entities.get("email")).email
-                        #email = validate_email(slot_value).email
-                        #print(email)
-                        dispatcher.utter_message(response="utter_email")
-                        return {"email": email}
+                """Validate email."""
+                try:
+                    # Validate & take the normalized form of the email
+                    # address for all logic beyond this point (especially
+                    # before going to a database query where equality
+                    # does not take into account normalization).
 
-                    except EmailNotValidError as e:
-                        # email is not valid, exception message is human-readable
-                        print(str(e))
-                        dispatcher.utter_message(response="utter_no_email")
-                        dispatcher.utter_message(text=str(e))
-                        dispatcher.utter_message(text= "Validate predefined slots")
-                        return {"email": None}
-                    
-                else:
-                    print("no email")
+                    # email = validate_email(entities.get("email")).email
+                    # email = validate_email(slot_value).email
+                    # print(email)
+                    dispatcher.utter_message(response="utter_email")
+                    return {"email": email}
+
+                except EmailNotValidError as e:
+                    # email is not valid, exception message is human-readable
+                    print(str(e))
+                    dispatcher.utter_message(response="utter_no_email")
+                    dispatcher.utter_message(text=str(e))
+                    dispatcher.utter_message(text="Validate predefined slots")
                     return {"email": None}
 
+            else:
+                print("no email")
+                return {"email": None}
+
     def validate_mobile_number(
-            self,
-            slot_value: Any,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: DomainDict,
-            ) -> Dict[Text, Any]:
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> Dict[Text, Any]:
 
-            """"
-            check if a phone number was extracted
-            """
-            entities = tracker.latest_message['entities']
-            for e in entities:
-                if e.get("entity")== "phone-number":
-                    phone = e.get("value")
-                    print (f"Phone was provided: {phone}")
-                
-                    """Validate phone number."""
-                    try: 
-                        # Validat and format the phone number
-                        valid_phone, phone_num_formated = utils.validate_phone_number(phone)
-                        dispatcher.utter_message(text=f"Phone: {phone_num_formated} is {valid_phone}")
-                        if valid_phone:
-                            return {"mobile_number": phone_num_formated}
-                        else:
-                            dispatcher.utter_message(text=f"Phone: {phone_num_formated} is not a valid number.")
-                            FollowupAction(name="mobile_number_form")  #### Check if this works
-                            return{"mobile_number": None}
-                    except:
-                        print("validation not failed")
-                        dispatcher.utter_message(text=f"Unfortunately we could not validate this phone number: {phone_num_formated}.")
-                        FollowupAction(name="mobile_number_form")
+        """ "
+        check if a phone number was extracted
+        """
+        entities = tracker.latest_message["entities"]
+        for e in entities:
+            if e.get("entity") == "phone-number":
+                phone = e.get("value")
+                print(f"Phone was provided: {phone}")
+
+                """Validate phone number."""
+                try:
+                    # Validat and format the phone number
+                    valid_phone, phone_num_formated = utils.validate_phone_number(phone)
+                    dispatcher.utter_message(
+                        text=f"Phone: {phone_num_formated} is {valid_phone}"
+                    )
+                    if valid_phone:
+                        return {"mobile_number": phone_num_formated}
+                    else:
+                        dispatcher.utter_message(
+                            text=f"Phone: {phone_num_formated} is not a valid number."
+                        )
+                        FollowupAction(
+                            name="mobile_number_form"
+                        )  #### Check if this works
                         return {"mobile_number": None}
-
-                else:
-                    print("no phone number")
-                    dispatcher.utter_message(text=f"Your last message did not contain a valid phone number.")
+                except:
+                    print("validation not failed")
+                    dispatcher.utter_message(
+                        text=f"Unfortunately we could not validate this phone number: {phone_num_formated}."
+                    )
                     FollowupAction(name="mobile_number_form")
                     return {"mobile_number": None}
+
+            else:
+                print("no phone number")
+                dispatcher.utter_message(
+                    text=f"Your last message did not contain a valid phone number."
+                )
+                FollowupAction(name="mobile_number_form")
+                return {"mobile_number": None}
 
 
 class ActionValidateEmail(Action):
@@ -297,30 +307,48 @@ class ActionValidateEmail(Action):
             dispatcher.utter_message(response="utter_no_email")
         return [SlotSet("email", email)]
 
+
 class ActionEmailOrSMS(Action):
     def name(self) -> Text:
         return "action_email_or_sms"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
 
-        #num_guests = tracker.get_slot('num_guests')
-        buttons = [{"payload": '/confirmation_by_email{"contact_channel":"email"}', "title": "Email"},
-            {"payload": '/confirmation_by_sms{"contatct_channel":"sms"}', "title": "SMS"}]
-        
-        dispatcher.utter_message(text="How would you like to receive the booking confirmation?", buttons=buttons)
+        # num_guests = tracker.get_slot('num_guests')
+        buttons = [
+            {
+                "payload": '/confirmation_by_email{"contact_channel":"email"}',
+                "title": "Email",
+            },
+            {
+                "payload": '/confirmation_by_sms{"contatct_channel":"sms"}',
+                "title": "SMS",
+            },
+        ]
+
+        dispatcher.utter_message(
+            text="How would you like to receive the booking confirmation?",
+            buttons=buttons,
+        )
 
         ##### EMAIL TESTS
-        subject = 'A test mail sent by Python. It has an attachment.' 
-        content = '''Hello,
+        subject = "A test mail sent by Python. It has an attachment."
+        content = """Hello,
         This is a simple mail.
         Thank You
-        '''
-        email = tracker.get_slot('email')
+        """
+        email = tracker.get_slot("email")
 
-        utils.send_email(email, subject, content, )
+        utils.send_email(
+            email,
+            subject,
+            content,
+        )
         ######
 
         return []
@@ -330,32 +358,41 @@ class ActionCalculateNumNights(Action):
     def name(self) -> Text:
         return "action_calculate_num_nights"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
 
         date_format = "%Y-%m-%d"
-        checkin_date = dt.strptime(tracker.get_slot('checkin_date'), date_format)
-        checkout_date = dt.strptime(tracker.get_slot('checkout_date'), date_format)
+        checkin_date = dt.strptime(tracker.get_slot("checkin_date"), date_format)
+        checkout_date = dt.strptime(tracker.get_slot("checkout_date"), date_format)
         num_nights = (checkout_date - checkin_date).days
 
-        buttons = [{"payload": "/change_checkout_date", "title": "Change checkout date"}, 
-            {"payload": "/change_checkin_date", "title": "Change checkin date"}]
-            #{"payload": "/change_num_guests", "title": "Change number of guests"}] ### FIX probably not used in this context
-        
+        buttons = [
+            {"payload": "/change_checkout_date", "title": "Change checkout date"},
+            {"payload": "/change_checkin_date", "title": "Change checkin date"},
+        ]
+        # {"payload": "/change_num_guests", "title": "Change number of guests"}] ### FIX probably not used in this context
+
         if int(num_nights) == 0:
-            dispatcher.utter_message(text=f"Your checkout date {checkout_date} and checkin date {checkin_date} are identical. \
-            Which date do you want to change?", buttons=buttons)
+            dispatcher.utter_message(
+                text=f"Your checkout date {checkout_date} and checkin date {checkin_date} are identical. \
+            Which date do you want to change?",
+                buttons=buttons,
+            )
             return []
 
         elif int(num_nights) < 0:
-            dispatcher.utter_message(text=f"Your checkout date {checkout_date} is before the checkin date {checkin_date}. \
-            Which date do you want to change?", buttons=buttons)
+            dispatcher.utter_message(
+                text=f"Your checkout date {checkout_date} is before the checkin date {checkin_date}. \
+            Which date do you want to change?",
+                buttons=buttons,
+            )
             return []
         else:
             return [SlotSet("num_nights", num_nights)]
-
 
 
 ######################
@@ -363,68 +400,99 @@ class ActionSetCheckoutDate(Action):
     def name(self) -> Text:
         return "action_set_checkout_date"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        dummy_date = tracker.get_slot('checkin_date_dummy')#dt.strptime(tracker.get_slot('checkout_date'), date_format)
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        dummy_date = tracker.get_slot(
+            "checkin_date_dummy"
+        )  # dt.strptime(tracker.get_slot('checkout_date'), date_format)
         try:
-            checkout_date = dummy_date.get('to') # this action should only be called from checkin_date_dummy validation if duckling returns a dict
-            return [SlotSet("checkout_date", get_date(checkout_date)),
-                    SlotSet("checkin_date_dummy", None)]
+            checkout_date = dummy_date.get(
+                "to"
+            )  # this action should only be called from checkin_date_dummy validation if duckling returns a dict
+            return [
+                SlotSet("checkout_date", get_date(checkout_date)),
+                SlotSet("checkin_date_dummy", None),
+            ]
         except:
             checkout_date = None
         return [SlotSet("checkout_date", checkout_date)]
-
 
 
 class ActionResetCheckinDate(Action):
     def name(self) -> Text:
         return "action_reset_checkin_date"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkin_date", None),
-                SlotSet("num_nights", None)]
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        return [SlotSet("checkin_date", None), SlotSet("num_nights", None)]
+
 
 class ActionResetCheckoutDate(Action):
     def name(self) -> Text:
         return "action_reset_checkout_date"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkout_date", None),
-        SlotSet("num_nights", None)]
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        return [SlotSet("checkout_date", None), SlotSet("num_nights", None)]
+
 
 class ActionResetNumGuests(Action):
     def name(self) -> Text:
         return "action_reset_num_guests"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
         return [SlotSet("num_guests", None)]
-
 
 
 class ActionCheckRoom(Action):
     def name(self) -> Text:
         return "action_check_rooms"
 
-    def run(self,
-            dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
 
-        num_guests = tracker.get_slot('num_guests')
-        #q = "select * from restaurants where cuisine='{0}' limit 1".format(cuisine)
-        #result = db.query(q)
-        message = f"Number of guests: {num_guests}"
+        num_guests = tracker.get_slot("num_guests")
+        checkin_date = tracker.get_slot("checkin_date")
+        checkout_date = tracker.get_slot("checkout_date")
+        num_single_rooms = tracker.get_slot("num_single_rooms")
+        num_double_rooms = tracker.get_slot("num_double_rooms")
+
+        # check availabilty on API
+        (
+            availability_ID,
+            num_single_rooms_available,
+            num_double_rooms_available,
+            single_room_rate,
+            double_room_rate,
+        ) = utils.request_room_availability(
+            checkin_date, checkout_date, num_single_rooms, num_double_rooms
+        )
+
+        # TODO:  include business logic for validating availabiliy vs. request
+
+        # message = f"Number of guests: {num_guests}"
+        message = f"Single room rate: {single_room_rate}"
         dispatcher.utter_message(text=message)
-        #return [SlotSet("matches", result if result is not None else [])]
+        # return [SlotSet("matches", result if result is not None else [])]
         return []

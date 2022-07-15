@@ -44,9 +44,11 @@ entities:
   - num_guests
   - time
   - number
-  - single_room
-  - double_room
-  - room_type
+  - room_type:
+      roles:
+      - single_room
+      - double_room
+      - unspecified
   - amount
   - contact_channel
 
@@ -104,6 +106,13 @@ responses:
   - text: Which date to you want to arrive at our hotel?
   utter_ask_checkout_date:
   - text: On which day do you expect to checkout?
+  utter_num_room_types:
+  - text: You need {num_single_rooms} single rooms and {num_double_rooms} double rooms.
+  utter_ask_num_single_rooms:
+  - text: How many single rooms do you need?
+  utter_ask_num_double_rooms:
+  - text: How many double rooms do you need?  
+
 
 # breakfast information
   utter_breakfast_price:
@@ -214,6 +223,27 @@ slots:
     #  entity: number
     #  intent: inform_num_nights
 
+
+  num_single_rooms:
+    type: float
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+        - active_loop: room_type_form
+          requested_slot: num_single_rooms
+
+  num_double_rooms:
+    type: float
+    influence_conversation: true
+    mappings:
+    - type: from_entity
+      entity: number
+      conditions:
+        - active_loop: room_type_form
+          requested_slot: num_double_rooms
+
   contact_channel:
     type: text
     influence_conversation: true
@@ -234,6 +264,12 @@ forms:
   mobile_number_form:
     required_slots:
     - mobile_number
+
+  room_type_form:
+    required_slots:
+    - num_single_rooms
+    - num_double_rooms
+    - num_guests
 
   stay_form:
     required_slots:
