@@ -24,12 +24,15 @@ from rasa_sdk.events import (
 
 from datetime import datetime as dt
 from email_validator import validate_email, EmailNotValidError
-import imp
+
+# import imp
+import importlib
 
 from sqlalchemy import except_
 import actions.utils as utils
 
-imp.reload(utils)
+# imp.reload(utils)
+importlib.reload(utils)
 
 
 def get_date(time):
@@ -479,20 +482,13 @@ class ActionCheckRoom(Action):
         num_double_rooms = tracker.get_slot("num_double_rooms")
 
         # check availabilty on API
-        (
-            availability_ID,
-            num_single_rooms_available,
-            num_double_rooms_available,
-            single_room_rate,
-            double_room_rate,
-        ) = utils.request_room_availability(
+        room_proposal = utils.request_room_availability(
             checkin_date, checkout_date, num_single_rooms, num_double_rooms
         )
 
         # TODO:  include business logic for validating availabiliy vs. request
 
         # message = f"Number of guests: {num_guests}"
-        message = f"Single room rate: {single_room_rate}"
+        message = f"Single room rate: {room_proposal.get('single_room_rate')}"
         dispatcher.utter_message(text=message)
-        # return [SlotSet("matches", result if result is not None else [])]
-        return []
+        return [SlotSet("room_proposal", room_proposal)]

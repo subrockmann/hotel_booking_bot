@@ -244,6 +244,11 @@ slots:
         - active_loop: room_type_form
           requested_slot: num_double_rooms
 
+  room_proposal:
+    type: any
+    mappings:
+    - type: custom
+
   contact_channel:
     type: text
     influence_conversation: true

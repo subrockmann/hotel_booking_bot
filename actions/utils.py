@@ -59,10 +59,10 @@ def request_room_availability(
     double_room_rate = 140
     availability_ID = "007"
 
-    return (
-        availability_ID,
-        num_single_rooms_available,
-        num_double_rooms_available,
-        single_room_rate,
-        double_room_rate,
-    )
+    return {
+        "availability_ID": availability_ID,
+        "num_single_rooms_available": num_single_rooms_available,
+        "num_double_rooms_available": num_double_rooms_available,
+        "single_room_rate": single_room_rate,
+        "double_room_rate": double_room_rate,
+    }
