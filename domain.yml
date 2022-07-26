@@ -7,10 +7,12 @@ intents:
   - deny
   - bot_challenge
   - inform
+  - stop
   - provide_names
   - inform_email
   - inform_mobile_number
   - ask_availability
+  - ask_room_price
   - change_checkin_date
   - change_checkout_date
   - change_num_guests
@@ -56,10 +58,21 @@ responses:
   utter_greet:
   - text: "Hey! How are you?"
 
+  utter_introduction_ebutler:
+  - text: "Hello, my name is e-Butler. \n I am the virtual assistant from Lakeside Hotel."
 
+  utter_how_can_I_help:
+  - text: "How can I help you?"
+  utter_anything_else:
+  - text: Is there anything else that I can help you with?
+  utter_I_am_happy_to_help:
+  - text: It was a pleasure to help you.
+
+  utter_ask_continue:
+  - text: Do you want to continue?
 
   utter_goodbye:
-  - text: "Bye"
+  - text: "Goodbye."
 
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
@@ -87,7 +100,7 @@ responses:
 
 # SMS
   utter_ask_mobile_number:
-  - text: What is your mobile phone number? Please, provide it in international format '+49 xxx xxx'
+  - text: Could you tell me your phone number in international format '+49 xxx xxx, please?'
   utter_mobile_number:
   - text: Thank you for providing {mobile_number} so that we can contact you.
   utter_confirmation:sms:
@@ -105,13 +118,21 @@ responses:
   utter_ask_checkin_date:
   - text: Which date to you want to arrive at our hotel?
   utter_ask_checkout_date:
-  - text: On which day do you expect to checkout?
+  - text: On which day do you want to checkout?
   utter_num_room_types:
   - text: You need {num_single_rooms} single rooms and {num_double_rooms} double rooms.
   utter_ask_num_single_rooms:
   - text: How many single rooms do you need?
   utter_ask_num_double_rooms:
   - text: How many double rooms do you need?  
+
+# Confirm booking
+  utter_ask_proceed_booking:
+  - text: Shall I book these rooms for you?  # do we need to distinguish between one or more rooms?
+  utter_standard_room_prices:
+  - text: Our standard room prices are 80.00 Euros for a single room \n and 140.00 Euros for a double room.
+  utter_special_room_prices:
+  - text: Special room prices and promotions are available throughout the year. \n Do you want to check prices for a specific date?
 
 
 # breakfast information
@@ -175,15 +196,15 @@ slots:
     - type: from_entity
       entity: name
 
-  num_guests:
-    type: float ## "any" must be used in conjunction with custom slot mappings
-    influence_conversation: true
-    mappings:
-    - type: from_entity
-      entity: number
-      conditions:
-      - active_loop: stay_form
-        requested_slot: num_guests
+  # num_guests:
+  #   type: float ## "any" must be used in conjunction with custom slot mappings
+  #   influence_conversation: true
+  #   mappings:
+  #   - type: from_entity
+  #     entity: number
+  #     conditions:
+  #     - active_loop: stay_form
+  #       requested_slot: num_guests
   
   checkin_date_dummy: # only needed to grab information during the intent
     type: text 
@@ -273,11 +294,10 @@ forms:
   room_type_form:
     required_slots:
     - num_single_rooms
-    - num_double_rooms
-    - num_guests
+    #- num_double_rooms
 
   stay_form:
     required_slots:
     - checkin_date
     - checkout_date
-    - num_guests
+  #  - num_guests

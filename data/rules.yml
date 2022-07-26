@@ -67,7 +67,7 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  - action: utter_mobile_number
+  #- action: utter_mobile_number
 
 
 # Stay form
@@ -86,10 +86,8 @@ rules:
   - slot_was_set: 
     - requested_slot: null
   - action: action_calculate_num_nights 
-  - action: room_type_form # does this work ?
-  - action: utter_num_room_types
-  - action: action_check_rooms
-  #- action: utter_stay_form
+  - action: room_type_form
+
 
 ### Room type form
 - rule: Activate room_type_form
@@ -107,8 +105,6 @@ rules:
   - slot_was_set: 
     - requested_slot: null
   - action: utter_num_room_types
-
-
 
 - rule: Change checkin date
   steps:

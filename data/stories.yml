@@ -2,6 +2,40 @@ version: "3.1"
 
 stories:
 
+- story: introduction e-Butler
+  steps: 
+  - action: utter_introduction_ebutler
+  - action: utter_how_can_I_help
+
+
+- story: ask room price
+  steps: 
+  - intent: ask_room_price
+  - action: utter_standard_room_prices
+  - action: utter_special_room_prices
+
+- story: ask room prices for specific date
+  steps:
+  - action: utter_special_room_prices
+  - intent: affirm 
+  - action: stay_form
+  - active_loop: stay_form
+  
+- story: Check availability of rooms
+  steps:
+  - action: utter_num_room_types
+  - action: action_check_rooms
+  - action: utter_stay_form
+
+
+
+- story: anything else to help - happy path
+  steps:
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_I_am_happy_to_help
+
+
 - story: happy path
   steps:
   - intent: greet
@@ -23,11 +57,18 @@ stories:
     entities:
     - phone-number
   - slot_was_set:
-    - mobile_number: null #None # should this be 'null'
+    - mobile_number: null 
   - action: mobile_number_form
   - active_loop: mobile_number_form
   
 
-# - story: tell required room types
+# - story: Booking a room
 #   steps:
-#   - intent: in
+#   - action: action_calculate_num_nights
+#   - action: room_type_form
+#   - active_loop: room_type_form
+#   - active_loop: null
+#   - action: action_check_rooms
+#   - action: utter_ask_proceed_booking
+#   - intent: affirm
+#   - action: action_email_or_sms

@@ -88,6 +88,56 @@ class ValidateStayForm(FormValidationAction):
             return {"checkout_date": get_date(slot_value)}
 
 
+########################
+# class ValidateRoomTypeForm(FormValidationAction):
+#     def name(self) -> Text:
+#         return "validate_room_type_form"
+
+#     def validate_num_single_rooms(
+#         self,
+#         slot_value: Any,
+#         dispatcher: CollectingDispatcher,
+#         tracker: Tracker,
+#         domain: DomainDict,
+#     ) -> Dict[Text, Any]:
+#         """Validate number of single rooms"""
+#         if isinstance(slot_value, int):
+#             if slot_value < 0:
+#                 dispatcher.utter_message(
+#                     text="This is not a valid number for rooms."
+#                 )  ### better explanation would be helpful
+#                 return {"num_single_rooms": None}
+#             else:
+#                 return {"num_single_rooms": slot_value}
+#         else:
+#             dispatcher.utter_message(
+#                 text="Please provide a full positive numer."
+#             )  ### better explanation would be helpful
+#             return {"num_single_rooms": None}
+
+#     def validate_num_double_rooms(
+#         self,
+#         slot_value: Any,
+#         dispatcher: CollectingDispatcher,
+#         tracker: Tracker,
+#         domain: DomainDict,
+#     ) -> Dict[Text, Any]:
+#         """Validate number of double rooms"""
+#         if isinstance(slot_value, int):
+#             if slot_value < 0:
+#                 dispatcher.utter_message(
+#                     text="This is not a valid number for rooms."
+#                 )  ### better explanation would be helpful
+#                 return {"num_double_rooms": None}
+#             else:
+#                 return {}  # {"num_double_rooms": slot_value}
+#         else:
+#             dispatcher.utter_message(
+#                 text="Please provide a full positive numer."
+#             )  ### better explanation would be helpful
+#             return {"num_double_rooms": None}
+
+
 class ValidateEmailForm(FormValidationAction):
     def name(self) -> Text:
         return "validate_email_form"
@@ -234,12 +284,13 @@ class ValidatePredefinedSlots(ValidationAction):
 
                 """Validate phone number."""
                 try:
-                    # Validat and format the phone number
+                    # Validate and format the phone number
                     valid_phone, phone_num_formated = utils.validate_phone_number(phone)
-                    dispatcher.utter_message(
-                        text=f"Phone: {phone_num_formated} is {valid_phone}"
-                    )
+                    # dispatcher.utter_message(
+                    #    text=f"Phone: {phone_num_formated} is {valid_phone}"
+                    # )
                     if valid_phone:
+                        dispatcher.utter_message(response="utter_mobile_number")
                         return {"mobile_number": phone_num_formated}
                     else:
                         dispatcher.utter_message(
@@ -250,7 +301,7 @@ class ValidatePredefinedSlots(ValidationAction):
                         )  #### Check if this works
                         return {"mobile_number": None}
                 except:
-                    print("validation not failed")
+                    print("validation failed")
                     dispatcher.utter_message(
                         text=f"Unfortunately we could not validate this phone number: {phone_num_formated}."
                     )
@@ -487,7 +538,7 @@ class ActionCheckRoom(Action):
         )
 
         # TODO:  include business logic for validating availabiliy vs. request
-        if room_proposal["availability_issue"]== None:
+        if room_proposal["availability_issue"] == None:
             message = f"""We can offer you the following rooms:
             \n Checkin date: {checkin_date}
             \n Checkout date: {checkout_date}
@@ -496,7 +547,28 @@ class ActionCheckRoom(Action):
             dispatcher.utter_message(text=message)
         # message = f"Number of guests: {num_guests}"
         else:
-            #message = f"Single room rate: {room_proposal.get('single_room_rate')}"
-            message = f"There is an availability issue {room_proposal['availability_issue']}"
+            # message = f"Single room rate: {room_proposal.get('single_room_rate')}"
+            message = (
+                f"There is an availability issue {room_proposal['availability_issue']}"
+            )
             dispatcher.utter_message(text=message)
         return [SlotSet("room_proposal", room_proposal)]
+
+
+class ActionNavigation(Action):
+    def name(self) -> Text:
+        return "action_display_navigation"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+
+        buttons = [
+            {"payload": "/ask_availability", "title": "Book a room"},
+            {"payload": "/ask_room_price", "title": "Check room prices"},
+        ]
+
+        return []

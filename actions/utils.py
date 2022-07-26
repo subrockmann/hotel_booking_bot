@@ -30,6 +30,7 @@ def send_email(receiver_email, subject, content):
 
     # Create SMTP session for sending the mail
     session = smtplib.SMTP(SMTP_STRING, SMTP_PORT)
+    session.connect()
     session.starttls()  # enable security
     session.login(SENDER_ADDRESS, SENDER_EMAIL_PASSWORD)
     session.sendmail(SENDER_ADDRESS, receiver_email, text)
@@ -39,11 +40,16 @@ def send_email(receiver_email, subject, content):
 
 
 def validate_phone_number(phone_number):
-    phone_num_parsed = phonenumbers.parse(phone_number, None)
-    valid_phone = phonenumbers.is_possible_number(phone_num_parsed)
-    phone_num_formated = phonenumbers.format_number(
-        phone_num_parsed, phonenumbers.PhoneNumberFormat.E164
-    )
+    try:
+        phone_num_parsed = phonenumbers.parse(phone_number, None)
+        valid_phone = phonenumbers.is_possible_number(phone_num_parsed)
+        phone_num_formated = phonenumbers.format_number(
+            phone_num_parsed, phonenumbers.PhoneNumberFormat.E164
+        )
+    except:
+        phone_num_formated = phone_number
+        valid_phone = False
+
     return valid_phone, phone_num_formated
 
 
@@ -51,7 +57,7 @@ def request_room_availability(
     checkin_date, checkout_date, num_single_rooms, num_double_rooms
 ):
     """
-    Mock-up of room hotel reservation system
+    Mock-up of hotel room reservation system
     """
     num_single_rooms_available = num_single_rooms + 1
     num_double_rooms_available = num_double_rooms + 1
@@ -59,10 +65,29 @@ def request_room_availability(
     double_room_rate = 140
     availability_ID = "007"
 
-    return {
+    room_proposal = {
         "availability_ID": availability_ID,
-        "num_single_rooms_available": num_single_rooms_available,
-        "num_double_rooms_available": num_double_rooms_available,
+        "checkin_date": checkin_date,
+        "checkout_date": checkout_date,
+        "num_single_rooms_available": num_single_rooms,
+        "num_double_rooms_available": num_double_rooms,
         "single_room_rate": single_room_rate,
         "double_room_rate": double_room_rate,
     }
+
+    if num_single_rooms_available < num_single_rooms:
+        room_proposal["num_single_rooms_available"] = num_single_rooms_available
+        room_proposal["availability_issue"] = "single_problem"
+
+        if num_double_rooms_available < num_double_rooms:
+            room_proposal["num_double_rooms_available"] = num_double_rooms_available
+            room_proposal["availability_issue"] = "single_double_problem"
+    elif num_double_rooms_available < num_double_rooms:
+
+        room_proposal["num_double_rooms_available"] = num_double_rooms_available
+        room_proposal["availability_issue"] = "double_problem"
+
+    else:
+        room_proposal["availability_issue"] = None
+
+    return room_proposal

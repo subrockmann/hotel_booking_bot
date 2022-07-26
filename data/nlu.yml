@@ -80,6 +80,18 @@ nlu:
     - no way
     - not really
 
+- intent: stop 
+  examples: |
+    - stop 
+    - get me out of this loop 
+    - this sucks
+    - dumb bot
+    - idiot 
+    - crazy chatbot
+    - bloody bot 
+    - damn 
+    - i give up 
+
 
 
 - intent: bot_challenge
@@ -100,6 +112,13 @@ nlu:
     - nine people
     - for 3 nights
     - 1 night
+    - monday
+    - Tuesday
+    - Wednesday
+    - thursday
+    - Friday
+    - saturday
+    - sunday
 
 - intent: provide_names
   examples: |
@@ -175,6 +194,18 @@ nlu:
     - Is breakfast free
     - What is the price for breakfast
     - How much is breakfast
+
+- intent: ask_room_price
+  examples: |
+    - How much is a single room per night
+    - What are your standard room prices
+    - How much does a double room cost
+    - How much does a single room cost per night
+    - price for a double room
+    - price for a single room
+    - price per night
+    - how much do you charge per night
+    - what is the price per night?
 
 - intent: confirmation_by_email
   examples: |
