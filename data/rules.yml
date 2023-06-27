@@ -104,7 +104,8 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  - action: utter_num_room_types
+  wait_for_user_input: false
+  #- action: utter_num_room_types
 
 - rule: Change checkin date
   steps:
