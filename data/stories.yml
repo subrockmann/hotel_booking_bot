@@ -21,12 +21,23 @@ stories:
   - action: stay_form
   - active_loop: stay_form
   
-- story: Check availability of rooms
+# - story: Check availability of rooms
+#   steps:
+#   - action: utter_num_room_types
+#   - action: action_check_rooms
+#   - action: utter_stay_form
+
+- story: Booking a room
   steps:
+#   - action: action_calculate_num_nights
+#   - action: room_type_form
+  - active_loop: room_type_form
+  - active_loop: null
   - action: utter_num_room_types
   - action: action_check_rooms
-  - action: utter_stay_form
-
+  - action: utter_ask_proceed_booking
+  - intent: affirm
+  - action: action_email_or_sms
 
 
 - story: anything else to help - happy path
@@ -62,13 +73,3 @@ stories:
   - active_loop: mobile_number_form
   
 
-# - story: Booking a room
-#   steps:
-#   - action: action_calculate_num_nights
-#   - action: room_type_form
-#   - active_loop: room_type_form
-#   - active_loop: null
-#   - action: action_check_rooms
-#   - action: utter_ask_proceed_booking
-#   - intent: affirm
-#   - action: action_email_or_sms
