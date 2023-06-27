@@ -1,5 +1,4 @@
 version: "3.1"
-
 nlu:
 - intent: greet
   examples: |
@@ -16,7 +15,6 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
-
 - intent: goodbye
   examples: |
     - cu
@@ -29,7 +27,6 @@ nlu:
     - see you around
     - bye bye
     - see you later
-
 - intent: affirm
   examples: |
     - yes
@@ -39,11 +36,9 @@ nlu:
     - that sounds good
     - correct
     - yess please
-    - of course
     - sweet
     - cool,
     - yes...
-    - y
     - ok
     - ye
     - okay
@@ -68,8 +63,6 @@ nlu:
     - Yes please
     - Yes please!
     - Yes, I accept
-
-
 - intent: deny
   examples: |
     - no
@@ -79,28 +72,23 @@ nlu:
     - don't like that
     - no way
     - not really
-
-- intent: stop 
+- intent: stop
   examples: |
-    - stop 
-    - get me out of this loop 
+    - stop
+    - get me out of this loop
     - this sucks
     - dumb bot
-    - idiot 
+    - idiot
     - crazy chatbot
-    - bloody bot 
-    - damn 
-    - i give up 
-
-
-
+    - bloody bot
+    - damn
+    - i give up
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
-
 - intent: inform
   examples: |
     - for ten people
@@ -119,14 +107,14 @@ nlu:
     - Friday
     - saturday
     - sunday
-
+    - friday
+    - 1
 - intent: provide_names
   examples: |
     - i want to give you my name
     - you need to know my name
     - do you know my name?
     - do you need my name
-
 - intent: inform_email
   examples: |
     - my email is [Elizabeth@yahoo.com](email)
@@ -150,40 +138,18 @@ nlu:
     - ok it's [Hee@yahoo.com](email)
     - ok its [P_Simpkins@Suehs.com](email)
     - here is my email: [Marcus.Miller@yahoo.com](email)
-
 - intent: ask_availability
   examples: |
     - I need a room for tonight.
     - I want to stay at your hotel next week.
     - Do you have rooms available for the weekend?
     - Can we stay at your hotel with 10 people?
-    - Can I book a [single room]{"entity": "room_type", "role":"single_room"} for Friday night?
-    - I need a [single room]{"entity": "room_type", "role":"single_room"} on Tuesday.
-    - 1 [single]{"entity":"room_type", "role": "single_room"} and 2 [doubles]{"entity":"room_type", "role": "double_room"}
-    - 3 [double rooms]{"entity":"room_type", "role": "double_room"}
-    - A [double]{"entity":"room_type", "role": "double_room"}
-    - We want to book 5 [doubles]{"entity": "room_type", "role":"double_room"} and 1 [single]{"entity":"room_type", "role":"single_room"}
-#    # - I need a [room]{"entity": "room_type", "role":"unspecified"} for tonight.
-#    - I want to stay at your hotel next week.
-#    - Do you have [rooms]{"entity": "room_type", "role":"unspecified"} available for the weekend?
-#    - Can we stay at your hotel with 10 people?
-#    - Can I book a [single room]{"entity": "room_type", "role":"single_room"} for Friday night?
-#    - I need a [single room]{"entity": "room_type", "role":"single_room"} on Tuesday.
-#    - 1 [single]{"entity":"room_type", "role": "single_room"} and 2 [doubles]{"entity":"room_type", "role": "double_room"}
-#    - 3 [double rooms]{"entity":"room_type", "role": "double_room"}
-#    - A [double]{"entity":"room_type", "role": "double_room"}
-#    - We want to book 5 [doubles]{"entity": "room_type", "role":"double_room"} and 1 [single]{"entity":"room_type", "role":"single_room"}
-
-
-# - intent: inform_num_nights
-#   examples: |
-#     - I will stay 3 nights.
-#     - 1 night
-#     - We need accomodation for 6 nights.
-#     - We will stay for a week.
-#     - 2 nights
-
-
+    - Can I book a single room for Friday night?
+    - I need a single and 2 doubles
+    - 3 double rooms
+    - A double
+    - We want to book 5 double and 1 single room
+    - I need ar oom for tomorrow
 - intent: ask_breakfast_price
   examples: |
     - Do you have complimentary breakfast?
@@ -194,7 +160,6 @@ nlu:
     - Is breakfast free
     - What is the price for breakfast
     - How much is breakfast
-
 - intent: ask_room_price
   examples: |
     - How much is a single room per night
@@ -206,23 +171,22 @@ nlu:
     - price per night
     - how much do you charge per night
     - what is the price per night?
-
 - intent: confirmation_by_email
   examples: |
-    - Send the confirmation by [mail]{"entity": "contact_channel"}
-    - confirm by [mail]{"entity": "contact_channel"}
-    - Please, send me the details by [email]{"entity": "contact_channel"}
-    - answer by [mail]{"entity": "contact_channel"}
-    - [email]{"entity": "contact_channel"} confirmation
-    - send an [email]{"entity": "contact_channel"}
-    - Could you send me the booking details by [mail]{"entity": "contact_channel"}?
-
+    - Send the confirmation by [mail](contact_channel)
+    - confirm by [mail](contact_channel)
+    - Please, send me the details by [email](contact_channel)
+    - answer by [mail](contact_channel)
+    - [email](contact_channel) confirmation
+    - send an [email](contact_channel)
+    - Could you send me the booking details by [mail](contact_channel)?
+    - Can you please send me the details by [mail](contact_channel).
 - intent: confirmation_by_sms
   examples: |
-    - Send the confirmation by [sms]{"entity": "contact_channel"}
-    - confirm by [text]{"entity": "contact_channel"}
-    - Please, send me the details by [SMS]{"entity": "contact_channel"}
-    - answer by [sms]{"entity": "contact_channel"}
-    - [SMS]{"entity": "contact_channel"} confirmation
-    - send a [text message]{"entity": "contact_channel"}
-    - Could you send me the booking details by [SMS]{"entity": "contact_channel"}?
+    - Send the confirmation by [sms](contact_channel)
+    - confirm by [text](contact_channel)
+    - Please, send me the details by [SMS](contact_channel)
+    - answer by [sms](contact_channel)
+    - [SMS](contact_channel) confirmation
+    - send a [text message](contact_channel)
+    - Could you send me the booking details by [SMS](contact_channel)?
