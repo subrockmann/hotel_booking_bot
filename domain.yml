@@ -1,82 +1,76 @@
-version: "3.1"
-
+version: '3.1'
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - bot_challenge
-  - inform
-  - stop
-  - provide_names
-  - inform_email
-  - inform_mobile_number
-  - ask_availability
-  - ask_room_price
-  - change_checkin_date
-  - change_checkout_date
-  - change_num_guests
-  #- inform_num_nights
-  - supply_contact_info
-  - ask_breakfast_price
-  - inform_room_type
-  - confirmation_by_email
-  - confirmation_by_sms
-  
-
+- affirm
+- ask_availability
+- ask_breakfast_price
+- ask_room_price
+- bot_challenge
+- change_checkin_date
+- change_checkout_date
+- change_num_guests
+- confirmation_by_email
+- confirmation_by_sms
+- deny
+- goodbye
+- greet
+- inform
+- inform_email
+- inform_mobile_number
+- inform_room_type
+- provide_names
+- stop
+- supply_contact_info
 actions:
-  - action_validate_slot_mappings # to run single slot validation
-  - validate_stay_form
-  - validate_email_form
-  - action_validate_email
-  - action_check_rooms
-  - validate_checkin_date
-  - action_reset_checkin_date
-  - action_reset_checkout_date
-  - action_set_checkout_date # should only be called from checkin_date_dummy validation
-  - action_reset_num_guests
-  - action_calculate_num_nights
-  - action_email_or_sms
-
+- action_calculate_num_nights
+- action_check_rooms
+- action_email_or_sms
+- action_reset_checkin_date
+- action_reset_checkout_date
+- action_reset_num_guests
+- action_set_checkout_date
+- action_validate_email
+- action_validate_slot_mappings
+- utter_ask_proceed_booking
+- utter_num_room_types
+- validate_checkin_date
+- validate_email_form
+- validate_stay_form
 entities:
-  - email
-  - phone-number # provided by duckling
-  - mobile_number
-  - name
-  - num_guests
-  - time
-  - number
-  - room_type:
-      roles:
-      - single_room
-      - double_room
-      - unspecified
-  - amount
-  - contact_channel
-
+- email
+- phone-number
+- mobile_number
+- name
+- num_guests
+- time
+- number
+- room_type:
+    roles:
+    - single_room
+    - double_room
+    - unspecified
+- amount
+- contact_channel
 responses:
+  utter_default:
+  - text: Sorry I didn't get that. Can you rephrase?
   utter_greet:
-  - text: "Hey! How are you?"
-
+  - text: Hey! How are you?
   utter_introduction_ebutler:
-  - text: "Hello, my name is e-Butler. \n I am the virtual assistant from Lakeside Hotel."
-
+  - text: |-
+      Hello, my name is e-Butler. 
+       I am the virtual assistant from Lakeside Hotel.
   utter_how_can_I_help:
-  - text: "How can I help you?"
+  - text: How can I help you?
   utter_anything_else:
   - text: Is there anything else that I can help you with?
   utter_I_am_happy_to_help:
   - text: It was a pleasure to help you.
-
   utter_ask_continue:
   - text: Do you want to continue?
-
   utter_goodbye:
-  - text: "Goodbye."
-
+  - text: Goodbye.
   utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
-
+  - text: I am a bot, powered by Rasa.
   utter_ask_first_name:
   - text: What is your first name?
   utter_ask_last_name:
@@ -85,8 +79,6 @@ responses:
   - text: Thanks for providing your name.
   utter_name_values:
   - text: Thank you {first_name} {last_name} for providing your name!
-
-# EMAIL
   utter_ask_email:
   - text: Can you please provide me your email address?
   utter_email:
@@ -97,22 +89,16 @@ responses:
   - text: We need your email to contact you afterwards. Otherwise, we cannot help you with your request.
   utter_no_email:
   - text: Hmm, I'm not sure that {email} is a valid email, please make sure to include the full address 😅.
-
-# SMS
   utter_ask_mobile_number:
   - text: Could you tell me your phone number in international format '+49 xxx xxx, please?'
   utter_mobile_number:
   - text: Thank you for providing {mobile_number} so that we can contact you.
   utter_confirmation:sms:
   - text: We have sent a confirmation SMS to {mobile_number}.
-
-# Number of guests
   utter_ask_num_guests:
   - text: For how many people do you need accomodations?
   utter_num_guests:
-  - text: I will check the availability for {num_guests} guests.  ## might result in unintended conversations
-
-# Stay information
+  - text: I will check the availability for {num_guests} guests.
   utter_stay_form:
   - text: I will check the availability for {num_guests} guests from {checkin_date} to {checkout_date}.
   utter_ask_checkin_date:
@@ -124,42 +110,30 @@ responses:
   utter_ask_num_single_rooms:
   - text: How many single rooms do you need?
   utter_ask_num_double_rooms:
-  - text: How many double rooms do you need?  
-
-# Confirm booking
+  - text: How many double rooms do you need?
   utter_ask_proceed_booking:
-  - text: Shall I book these rooms for you?  # do we need to distinguish between one or more rooms?
+  - text: Shall I book these rooms for you?
   utter_standard_room_prices:
   - text: Our standard room prices are 80.00 Euros for a single room \n and 140.00 Euros for a double room.
   utter_special_room_prices:
   - text: Special room prices and promotions are available throughout the year. \n Do you want to check prices for a specific date?
-
-
-# breakfast information
   utter_breakfast_price:
   - text: The price for the breakfast buffet is € 19.00 per person.
   utter_ask_add_breakfast:
   - text: Do you want to add breakfast to your booking?
-
-# confirmation details
   utter_confirmation_by_email:
   - text: We have sent you the confirmation by email.
-
   utter_confirmation_by_sms:
   - text: We have sent you the confirmation by SMS.
-
-
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
-
 slots:
   first_name:
     type: text
     influence_conversation: true
     mappings:
     - type: from_text
-      #intent: None
       conditions:
       - active_loop: name_form
         requested_slot: first_name
@@ -168,136 +142,99 @@ slots:
     influence_conversation: true
     mappings:
     - type: from_text
-      #intent: None # request_names
       conditions:
       - active_loop: name_form
         requested_slot: last_name
-
   email:
     type: text
     influence_conversation: true
     mappings:
-    - type: custom 
-    #- type: from_entity
-      #entity: email  ### does this have to be custom?
-
+    - type: custom
   mobile_number:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: phone-number
-
-
   name:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: name
-
-  # num_guests:
-  #   type: float ## "any" must be used in conjunction with custom slot mappings
-  #   influence_conversation: true
-  #   mappings:
-  #   - type: from_entity
-  #     entity: number
-  #     conditions:
-  #     - active_loop: stay_form
-  #       requested_slot: num_guests
-  
-  checkin_date_dummy: # only needed to grab information during the intent
-    type: text 
+  checkin_date_dummy:
+    type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: time
       intent: ask_availability
-
   checkin_date:
-    type: text 
+    type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: time
-      #intent: ask_availability
       conditions:
       - active_loop: stay_form
         requested_slot: checkin_date
     - type: custom
-
   checkout_date:
-    type: text 
+    type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: time
       conditions:
-        - active_loop: stay_form
-          requested_slot: checkout_date
-
+      - active_loop: stay_form
+        requested_slot: checkout_date
   num_nights:
-    type: float ## "any" must be used in conjunction with custom slot mappings
+    type: float
     influence_conversation: true
     mappings:
     - type: custom
-    #  entity: number
-    #  intent: inform_num_nights
-
-
   num_single_rooms:
     type: float
-    influence_conversation: true
     mappings:
     - type: from_entity
       entity: number
       conditions:
-        - active_loop: room_type_form
-          requested_slot: num_single_rooms
-
+      - active_loop: room_type_form
+        requested_slot: num_single_rooms
   num_double_rooms:
     type: float
-    influence_conversation: true
     mappings:
     - type: from_entity
       entity: number
       conditions:
-        - active_loop: room_type_form
-          requested_slot: num_double_rooms
-
+      - active_loop: room_type_form
+        requested_slot: num_double_rooms
   room_proposal:
     type: any
     mappings:
     - type: custom
-
   contact_channel:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: contact_channel
-
 forms:
   name_form:
     required_slots:
     - first_name
     - last_name
-
   email_form:
     required_slots:
     - email
-
   mobile_number_form:
     required_slots:
     - mobile_number
-
   room_type_form:
     required_slots:
     - num_single_rooms
-    #- num_double_rooms
-
+    - num_double_rooms
   stay_form:
     required_slots:
     - checkin_date
     - checkout_date
-  #  - num_guests
