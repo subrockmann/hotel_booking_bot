@@ -89,53 +89,53 @@ class ValidateStayForm(FormValidationAction):
 
 
 ########################
-# class ValidateRoomTypeForm(FormValidationAction):
-#     def name(self) -> Text:
-#         return "validate_room_type_form"
+class ValidateRoomTypeForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_room_type_form"
 
-#     def validate_num_single_rooms(
-#         self,
-#         slot_value: Any,
-#         dispatcher: CollectingDispatcher,
-#         tracker: Tracker,
-#         domain: DomainDict,
-#     ) -> Dict[Text, Any]:
-#         """Validate number of single rooms"""
-#         if isinstance(slot_value, int):
-#             if slot_value < 0:
-#                 dispatcher.utter_message(
-#                     text="This is not a valid number for rooms."
-#                 )  ### better explanation would be helpful
-#                 return {"num_single_rooms": None}
-#             else:
-#                 return {"num_single_rooms": slot_value}
-#         else:
-#             dispatcher.utter_message(
-#                 text="Please provide a full positive numer."
-#             )  ### better explanation would be helpful
-#             return {"num_single_rooms": None}
+    def validate_num_single_rooms(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> Dict[Text, Any]:
+        """Validate number of single rooms"""
+        if isinstance(slot_value, int):
+            if slot_value < 0:
+                dispatcher.utter_message(
+                    text="This is not a valid number for rooms."
+                )  ### better explanation would be helpful
+                return {"num_single_rooms": None}
+            else:
+                return {"num_single_rooms": slot_value}
+        else:
+            dispatcher.utter_message(
+                text="Please provide a full positive numer."
+            )  ### better explanation would be helpful
+            return {"num_single_rooms": None}
 
-#     def validate_num_double_rooms(
-#         self,
-#         slot_value: Any,
-#         dispatcher: CollectingDispatcher,
-#         tracker: Tracker,
-#         domain: DomainDict,
-#     ) -> Dict[Text, Any]:
-#         """Validate number of double rooms"""
-#         if isinstance(slot_value, int):
-#             if slot_value < 0:
-#                 dispatcher.utter_message(
-#                     text="This is not a valid number for rooms."
-#                 )  ### better explanation would be helpful
-#                 return {"num_double_rooms": None}
-#             else:
-#                 return {}  # {"num_double_rooms": slot_value}
-#         else:
-#             dispatcher.utter_message(
-#                 text="Please provide a full positive numer."
-#             )  ### better explanation would be helpful
-#             return {"num_double_rooms": None}
+    def validate_num_double_rooms(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict,
+    ) -> Dict[Text, Any]:
+        """Validate number of double rooms"""
+        if isinstance(slot_value, int):
+            if slot_value < 0:
+                dispatcher.utter_message(
+                    text="This is not a valid number for rooms."
+                )  ### better explanation would be helpful
+                return {"num_double_rooms": None}
+            else:
+                return {}  # {"num_double_rooms": slot_value}
+        else:
+            dispatcher.utter_message(
+                text="Please provide a full positive numer."
+            )  ### better explanation would be helpful
+            return {"num_double_rooms": None}
 
 
 class ValidateEmailForm(FormValidationAction):
@@ -444,6 +444,7 @@ class ActionCalculateNumNights(Action):
             Which date do you want to change?",
                 buttons=buttons,
             )
+
             return []
         else:
             return [SlotSet("num_nights", num_nights)]
@@ -526,7 +527,7 @@ class ActionCheckRoom(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
 
-        num_guests = tracker.get_slot("num_guests")
+        # num_guests = tracker.get_slot("num_guests")
         checkin_date = tracker.get_slot("checkin_date")
         checkout_date = tracker.get_slot("checkout_date")
         num_single_rooms = tracker.get_slot("num_single_rooms")
