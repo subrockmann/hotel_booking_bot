@@ -11,6 +11,7 @@ from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker, ValidationAction, FormValidationAction
 from rasa_sdk.executor import CollectingDispatcher
+
 from rasa_sdk.types import DomainDict
 
 
@@ -34,6 +35,7 @@ import actions.utils as utils
 # imp.reload(utils)
 importlib.reload(utils)
 
+# Helper functions
 
 def get_date(time):
     # check if the date needs to be cleaned up
@@ -44,6 +46,27 @@ def get_date(time):
     except:
         return time
 
+# Default actions
+class ActionDefaultFallback(Action):
+    """Executes the fallback action and goes back to the previous state
+    of the dialogue"""
+
+    def name(self) -> Text:
+        return "action_default_fallback"
+
+    async def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        #dispatcher.utter_message(template="my_custom_fallback_template")
+        dispatcher.utter_message(text="Default Fallback Action Triggered!")
+        # Revert user message which led to fallback.
+        return [UserUtteranceReverted()]
+
+
+# Form validations
 
 class ValidateStayForm(FormValidationAction):
     def name(self) -> Text:
@@ -108,10 +131,11 @@ class ValidateRoomTypeForm(FormValidationAction):
                 )  ### better explanation would be helpful
                 return {"num_single_rooms": None}
             else:
+                dispatcher.utter_message(text = "Thanks for providing the number of single rooms.")
                 return {"num_single_rooms": slot_value}
         else:
             dispatcher.utter_message(
-                text="Please provide a full positive numer."
+                text="Please provide a full positive number."
             )  ### better explanation would be helpful
             return {"num_single_rooms": None}
 
@@ -130,10 +154,10 @@ class ValidateRoomTypeForm(FormValidationAction):
                 )  ### better explanation would be helpful
                 return {"num_double_rooms": None}
             else:
-                return {}  # {"num_double_rooms": slot_value}
+                return {"num_double_rooms": slot_value}
         else:
             dispatcher.utter_message(
-                text="Please provide a full positive numer."
+                text="Please provide a full positive nubmer."
             )  ### better explanation would be helpful
             return {"num_double_rooms": None}
 
@@ -218,7 +242,7 @@ class ValidatePredefinedSlots(ValidationAction):
 
         else:
             # DucklingEntityExtractor returns a string for a single date/time
-            print("is no dict")
+            print("Checkin date is no dict")
             # SlotSet("checkin_date", get_date(slot_value))
             # FollowupAction(name="stay_form") # not necessary due to detected intent
             return {"checkin_date": get_date(slot_value)}

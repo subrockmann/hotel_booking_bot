@@ -1,5 +1,6 @@
 version: '3.1'
 intents:
+- start_conversation
 - affirm
 - ask_availability
 - ask_breakfast_price
@@ -18,9 +19,12 @@ intents:
 - inform_mobile_number
 - inform_room_type
 - provide_names
+- name_form
 - stop
-- supply_contact_info
+#- supply_contact_info
+
 actions:
+- action_custom_fallback
 - action_calculate_num_nights
 - action_check_rooms
 - action_email_or_sms
@@ -32,9 +36,12 @@ actions:
 - action_validate_slot_mappings
 - utter_ask_proceed_booking
 - utter_num_room_types
+- utter_introduction_ebutler
 - validate_checkin_date
 - validate_email_form
 - validate_stay_form
+- validate_room_type_form
+
 entities:
 - email
 - phone-number
@@ -50,6 +57,7 @@ entities:
     - unspecified
 - amount
 - contact_channel
+
 responses:
   utter_default:
   - text: Sorry I didn't get that. Can you rephrase?
@@ -76,7 +84,7 @@ responses:
   utter_ask_last_name:
   - text: What is your last name?
   utter_submit_name:
-  - text: Thanks for providing your name.
+  - text: Thank you for providing your name.
   utter_name_values:
   - text: Thank you {first_name} {last_name} for providing your name!
   utter_ask_email:
@@ -100,13 +108,16 @@ responses:
   utter_num_guests:
   - text: I will check the availability for {num_guests} guests.
   utter_stay_form:
-  - text: I will check the availability for {num_guests} guests from {checkin_date} to {checkout_date}.
+  - text: Your requested stay is from {checkin_date} to {checkout_date}.
+  #- text: I will check the availability for {num_guests} guests from {checkin_date} to {checkout_date}.
   utter_ask_checkin_date:
   - text: Which date to you want to arrive at our hotel?
   utter_ask_checkout_date:
   - text: On which day do you want to checkout?
   utter_num_room_types:
+  #- text: You need rooms.
   - text: You need {num_single_rooms} single rooms and {num_double_rooms} double rooms.
+
   utter_ask_num_single_rooms:
   - text: How many single rooms do you need?
   utter_ask_num_double_rooms:
@@ -125,9 +136,12 @@ responses:
   - text: We have sent you the confirmation by email.
   utter_confirmation_by_sms:
   - text: We have sent you the confirmation by SMS.
+    
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
+
+# Slots  
 slots:
   first_name:
     type: text
@@ -137,6 +151,7 @@ slots:
       conditions:
       - active_loop: name_form
         requested_slot: first_name
+
   last_name:
     type: text
     influence_conversation: true
@@ -145,23 +160,29 @@ slots:
       conditions:
       - active_loop: name_form
         requested_slot: last_name
+
   email:
     type: text
     influence_conversation: true
     mappings:
     - type: custom
+      
   mobile_number:
-    type: text
+    type: text # phone
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: phone-number
+    # - type: from_intent
+    #   intent: inform_mobile_number
+
   name:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: name
+
   checkin_date_dummy:
     type: text
     influence_conversation: true
@@ -169,6 +190,7 @@ slots:
     - type: from_entity
       entity: time
       intent: ask_availability
+
   checkin_date:
     type: text
     influence_conversation: true
@@ -179,6 +201,7 @@ slots:
       - active_loop: stay_form
         requested_slot: checkin_date
     - type: custom
+      
   checkout_date:
     type: text
     influence_conversation: true
@@ -188,11 +211,13 @@ slots:
       conditions:
       - active_loop: stay_form
         requested_slot: checkout_date
+
   num_nights:
     type: float
     influence_conversation: true
     mappings:
     - type: custom
+      
   num_single_rooms:
     type: float
     mappings:
@@ -201,6 +226,7 @@ slots:
       conditions:
       - active_loop: room_type_form
         requested_slot: num_single_rooms
+
   num_double_rooms:
     type: float
     mappings:
@@ -209,31 +235,42 @@ slots:
       conditions:
       - active_loop: room_type_form
         requested_slot: num_double_rooms
+
   room_proposal:
     type: any
     mappings:
     - type: custom
+      
   contact_channel:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: contact_channel
+
+
+
+
 forms:
   name_form:
     required_slots:
     - first_name
     - last_name
+  
   email_form:
     required_slots:
     - email
+
   mobile_number_form:
     required_slots:
     - mobile_number
+
+
   room_type_form:
     required_slots:
     - num_single_rooms
     - num_double_rooms
+
   stay_form:
     required_slots:
     - checkin_date

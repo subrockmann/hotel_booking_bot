@@ -21,25 +21,87 @@ stories:
   - action: stay_form
   - active_loop: stay_form
   
-# - story: Check availability of rooms
-#   steps:
-#   - action: utter_num_room_types
-#   - action: action_check_rooms
-#   - action: utter_stay_form
+
+
+- story: Provide personal details with phone number request
+  steps:
+  # - intent: greet
+  # - action: utter_greet
+  - intent: name_form
+  - action: name_form
+  - active_loop: name_form
+  - action: utter_ask_first_name
+  - active_loop: name_form
+  - action: utter_ask_last_name
+  - active_loop: name_form
+  - action: name_form
+  - active_loop: null
+  - action: utter_name_values
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
+  - action: utter_ask_mobile_number
+  - active_loop: mobile_number_form
+  - action: mobile_number_form
+  - active_loop: null
+  - action: utter_mobile_number
+  # - intent: goodbye
+  # - action: utter_goodbye
+
 
 - story: Booking a room
   steps:
+  - intent: ask_availability
+  - action: stay_form
+  - active_loop: stay_form
+  - action: stay_form
+  - active_loop: null
+  - slot_was_set: 
+    - requested_slot: null
+  - action: action_calculate_num_nights 
 #   - action: action_calculate_num_nights
-#   - action: room_type_form
+  - action: utter_stay_form
+  #- intent: inform_room_type
+  - action: room_type_form
   - active_loop: room_type_form
+  - slot_was_set:
+    - requested_slot: null
   - active_loop: null
   - action: utter_num_room_types
-  - action: action_check_rooms
+  #- action: action_check_rooms
   - action: utter_ask_proceed_booking
   - intent: affirm
   - action: action_email_or_sms
 
+- story: Check availability of rooms
+  steps:
+  - action: utter_num_room_types
+  - action: utter_ask_proceed_booking
+  #- action: action_check_rooms
+  - intent: deny
+  #- action: utter_stay_form
 
+# Providing Names
+- story: User provides name
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: provide_names
+  #- intent: name_form
+  - action: name_form
+  - active_loop: name_form
+  - action: utter_ask_first_name
+  - active_loop: name_form
+  - action: utter_ask_last_name
+  - active_loop: name_form
+  - action: name_form
+  - active_loop: null
+  #- action: utter_submit_name
+  - action: utter_name_values
+  # - intent: goodbye
+  # - action: utter_goodbye
+
+
+# Anything else?
 - story: anything else to help - happy path
   steps:
   - action: utter_anything_else

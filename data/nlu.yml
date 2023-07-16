@@ -15,6 +15,7 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
+
 - intent: goodbye
   examples: |
     - cu
@@ -27,6 +28,7 @@ nlu:
     - see you around
     - bye bye
     - see you later
+
 - intent: affirm
   examples: |
     - yes
@@ -63,6 +65,7 @@ nlu:
     - Yes please
     - Yes please!
     - Yes, I accept
+
 - intent: deny
   examples: |
     - no
@@ -72,6 +75,7 @@ nlu:
     - don't like that
     - no way
     - not really
+
 - intent: stop
   examples: |
     - stop
@@ -83,12 +87,14 @@ nlu:
     - bloody bot
     - damn
     - i give up
+
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
 - intent: inform
   examples: |
     - for ten people
@@ -109,12 +115,33 @@ nlu:
     - sunday
     - friday
     - 1
+
 - intent: provide_names
   examples: |
+    - My name is John.
+    - Call me Alex.
+    - Hi, I'm Sarah.
+    - You can refer to me as Mr. Smith.
+    - I go by the name Jessica.
+    - My friends call me Mike.
+    - Name's David, nice to meet you.
+    - You can address me as Dr. Anderson.
+    - Just call me Sam.
+    - They call me Lily.
+    - You can call me by my nickname, Charlie.
+    - Most people know me as Robert.
+    - You can call me Ms. Johnson.
+    - I'm known as Jennifer.
+    - You can refer to me as Professor Davis.
+    - Please address me as Mrs. Thompson.
+    - You can call me by my first name, Amy.
+    - You can refer to me as Captain Adams.
+    - Please address me as Sir James.
     - i want to give you my name
     - you need to know my name
     - do you know my name?
     - do you need my name
+
 - intent: inform_email
   examples: |
     - my email is [Elizabeth@yahoo.com](email)
@@ -138,6 +165,18 @@ nlu:
     - ok it's [Hee@yahoo.com](email)
     - ok its [P_Simpkins@Suehs.com](email)
     - here is my email: [Marcus.Miller@yahoo.com](email)
+
+- intent: inform_mobile_number
+  examples: |
+    - My mobile number is [123456789](phone)
+    - Call me at [987654321](phone)
+    - You can reach me at [555555555](phone)
+    - You can contact me at [9876543210](phone)
+    - My phone number is [888888888](phone)
+    - Contact me at [9999999999](phone)
+    - You can reach me on [555.555.5555](phone)
+
+
 - intent: ask_availability
   examples: |
     - I need a room for tonight.
@@ -149,7 +188,8 @@ nlu:
     - 3 double rooms
     - A double
     - We want to book 5 double and 1 single room
-    - I need ar oom for tomorrow
+    - I need a room for tomorrow
+
 - intent: ask_breakfast_price
   examples: |
     - Do you have complimentary breakfast?
@@ -160,6 +200,7 @@ nlu:
     - Is breakfast free
     - What is the price for breakfast
     - How much is breakfast
+
 - intent: ask_room_price
   examples: |
     - How much is a single room per night
@@ -171,6 +212,7 @@ nlu:
     - price per night
     - how much do you charge per night
     - what is the price per night?
+
 - intent: confirmation_by_email
   examples: |
     - Send the confirmation by [mail](contact_channel)

@@ -11,8 +11,18 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+    
+# - rule: Start conversation  # conflicting with welcome user
+#   steps:
+#     - intent: start_conversation
+#     - action: utter_introduction_ebutler
 
- 
+- rule: welcome user
+  conversation_start: true  # this rule only applies at the beginning of a conversation
+  steps:
+    #- intent: greet
+    - action: utter_introduction_ebutler
+    - action: utter_how_can_I_help
 
 ### Email form
 - rule: Utter the email when provided by the user
@@ -40,15 +50,15 @@ rules:
   - action: name_form
   - active_loop: name_form
 
-- rule: Submit name_form
-  condition: 
-  - active_loop: name_form
-  steps:
-  - action: name_form
-  - active_loop: null
-  - slot_was_set: 
-    - requested_slot: null
-  - action: utter_name_values
+# - rule: Submit name_form
+#   condition: 
+#   - active_loop: name_form
+#   steps:
+#   - action: name_form
+#   - active_loop: null
+#   - slot_was_set: 
+#     - requested_slot: null
+#   - action: utter_name_values
 
 ### Mobile number form
 - rule: Activate mobile_number_form
@@ -67,7 +77,7 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  #- action: utter_mobile_number
+  - action: utter_mobile_number
 
 
 # Stay form
@@ -76,36 +86,58 @@ rules:
   - intent: ask_availability
   - action: stay_form
   - active_loop: stay_form
-
+  # follow-up action defined here
+  
 - rule: Submit stay_form
   condition: 
   - active_loop: stay_form
   steps:
   - action: stay_form
-  - active_loop: null
+
   - slot_was_set: 
     - requested_slot: null
+  - active_loop: null
   - action: action_calculate_num_nights 
+  - action: utter_stay_form
+
   - action: room_type_form
+  wait_for_user_input: false  
 
 
 ### Room type form
 - rule: Activate room_type_form
   steps:
-  - intent: inform_room_type
+  #- intent: inform_room_type
   - action: room_type_form
   - active_loop: room_type_form
+    
 
 - rule: Submit room_type_form
   condition: 
   - active_loop: room_type_form
+  - slot_was_set:
+      - requested_slot: null
   steps:
   - action: room_type_form
-  - active_loop: null
   - slot_was_set: 
     - requested_slot: null
+  - active_loop: null
+  - action: utter_num_room_types
   wait_for_user_input: false
-  #- action: utter_num_room_types
+
+# - rule: Submit room_type_form
+#   condition: 
+#   - active_loop: room_type_form
+#   - slot_was_set:
+#       - requested_slot: null
+#   steps:
+#   - action: room_type_form
+#   # - slot_was_set: 
+#   #   - requested_slot: null
+#   - active_loop: null
+#   - action: utter_num_room_types
+#     wait_for_user_input: false
+# #   #- action: utter_num_room_types
 
 - rule: Change checkin date
   steps:
