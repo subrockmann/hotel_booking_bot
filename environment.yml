@@ -3,13 +3,13 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.9
+  - python=3.8
   - black
   - jupyter
   - python-dotenv
   - pip:
       - rasa
-      - flask
       - email-validator
       - phonenumbers
+      # - flask
 
