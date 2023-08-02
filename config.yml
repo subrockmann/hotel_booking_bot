@@ -31,10 +31,11 @@ pipeline:
     # url of the running duckling server
   url: "http://localhost:8000"
     # dimensions to extract
-  dimensions: ["time", "number", "amount-of-money", "distance", "phone-number"]
+  dimensions: ["time", "number", "amount-of-money", "distance", "phone-number", "email"]
     # if not set the default timezone of Duckling is going to be used
     # needed to calculate dates from relative expressions like "tomorrow"
-  timezone: "Europe/Berlin"
+  #timezone: "Europe/Berlin"
+  locale: 'en_GB'
 
 # Configuration for Rasa Core.
 # https://rasa.com/docs/rasa/core/policies/
@@ -42,9 +43,9 @@ policies:
 # # No configuration for policies was provided. The following default policies were used to train your model.
 # # If you'd like to customize them, uncomment and adjust the policies.
 # # See https://rasa.com/docs/rasa/policies for more information.
-- name: MemoizationPolicy
-  priority: 3
-  max_history: 3
+# - name: MemoizationPolicy
+#   priority: 3
+#   max_history: 3n
   
 - name: "RulePolicy"
   priority: 1
