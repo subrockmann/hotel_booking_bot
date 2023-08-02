@@ -1,7 +1,6 @@
 version: "3.1"
 
 rules:
-
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
@@ -11,6 +10,7 @@ rules:
   steps:
   - intent: bot_challenge
   - action: utter_iamabot
+  - action: action_send_email_confirmation
     
 # - rule: Start conversation  # conflicting with welcome user
 #   steps:
@@ -20,18 +20,44 @@ rules:
 - rule: welcome user
   conversation_start: true  # this rule only applies at the beginning of a conversation
   steps:
-    #- intent: greet
+    - intent: greet
     - action: utter_introduction_ebutler
     - action: utter_how_can_I_help
+
+### Handover to human
+- rule: Connect the user to a human agent
+  steps:
+  - intent: handover_to_human
+  - action: utter_handover_to_human
+  wait_for_user_input: false
+    
+
+- rule: ask room price
+  steps: 
+  - intent: ask_room_price
+  - action: utter_standard_room_prices
+  - action: utter_special_room_prices
 
 ### Email form
 - rule: Utter the email when provided by the user
   steps:
   - intent: inform_email
-  - action: action_validate_email
-  - action: action_email_or_sms
-#  - action: email_form
-#  - active_loop: email_form
+  # - action: action_validate_email
+  # - action: action_ask_contact_channel
+  - action: email_form
+  - active_loop: email_form
+  
+- rule: request email and validate it 
+  steps: 
+  - action: utter_ask_email
+  - action: email_form
+  - active_loop: email_form  
+
+- rule: provide email and validate it 
+  steps: 
+  - intent: use_email
+  - action: email_form
+  - active_loop: email_form 
 
 - rule: Submit email_form
   condition: 
@@ -41,7 +67,8 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  - action: utter_email
+  #- action: utter_email # already included in email slot validation
+  wait_for_user_input: false
 
 ### Name form
 - rule: Activate name_form
@@ -50,22 +77,25 @@ rules:
   - action: name_form
   - active_loop: name_form
 
-# - rule: Submit name_form
-#   condition: 
-#   - active_loop: name_form
-#   steps:
-#   - action: name_form
-#   - active_loop: null
-#   - slot_was_set: 
-#     - requested_slot: null
-#   - action: utter_name_values
+- rule: Submit name_form
+  condition: 
+  - active_loop: name_form
+  steps:
+  - action: name_form
+  - slot_was_set: 
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_name_values
+  - action: utter_ask_contact_channel
+  #wait_for_user_input: false 
 
 ### Mobile number form
 - rule: Activate mobile_number_form
   steps:
   # - intent: inform
   #   entities: 
-  #   - phone-number
+  #   - phone
+  - action: utter_ask_mobile_number
   - action: mobile_number_form
   - active_loop: mobile_number_form
 
@@ -74,13 +104,20 @@ rules:
   - active_loop: mobile_number_form
   steps:
   - action: mobile_number_form
-  - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  - action: utter_mobile_number
+  - active_loop: null
+  wait_for_user_input: false
+  #- action: utter_mobile_number
 
+- rule: get phone number
+  steps:
+  - intent: inform_mobile_number
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
+#  - active_loop: null
 
-# Stay form
+### Stay form
 - rule: Activate stay_form
   steps:
   - intent: ask_availability
@@ -99,10 +136,8 @@ rules:
   - active_loop: null
   - action: action_calculate_num_nights 
   - action: utter_stay_form
-
   - action: room_type_form
   wait_for_user_input: false  
-
 
 ### Room type form
 - rule: Activate room_type_form
@@ -123,21 +158,68 @@ rules:
     - requested_slot: null
   - active_loop: null
   - action: utter_num_room_types
-  wait_for_user_input: false
+  - action: utter_ask_check_availability  
+    
 
-# - rule: Submit room_type_form
-#   condition: 
-#   - active_loop: room_type_form
+- rule: Check for room availability when user confirms the room types
+  steps:
+  - action: utter_ask_check_availability
+  - intent: affirm
+  - action: action_check_rooms
+  wait_for_user_input: false  
+
+  #wait_for_user_input: false
+
+# - rule: Only proceed with available rooms
+#   condition:
 #   - slot_was_set:
-#       - requested_slot: null
-#   steps:
-#   - action: room_type_form
-#   # - slot_was_set: 
-#   #   - requested_slot: null
-#   - active_loop: null
-#   - action: utter_num_room_types
-#     wait_for_user_input: false
-# #   #- action: utter_num_room_types
+#     - room_proposal: true
+#   steps: 
+#   - action: action_check_rooms
+#   - action: utter_ask_proceed_booking
+    
+
+# - rule: No rooms available
+#   condition:
+#   - slot_was_set:
+#     - room_proposal: false
+#   steps: 
+#   - action: action_check_rooms
+#   - action: utter_rooms_unavailable
+#   - action: utter_ask_change_dates
+  
+# - rule: Only proceed with available rooms
+
+#   condition:
+#   - slot_was_set:
+#     - room_proposal: true
+  
+#     steps: 
+
+#     - action: action_check_rooms
+#     - action: utter_ask_proceed_booking
+#     - intent: affirm
+#     - action: action_email_or_sms
+  
+# - rule: Only proceed with available rooms
+#   condition:
+#   - slot_was_set:
+#     - room_proposal: true
+#     steps: 
+#     - action: action_check_rooms
+#     - action: utter_ask_proceed_booking
+#     - intent: affirm
+#     - action: action_email_or_sms
+
+# - rule: No rooms available
+#   condition:
+#   - slot_was_set:
+#     - room_proposal: false
+#     steps: 
+#     - action: action_check_rooms
+#     - action: utter_rooms_unavailable
+#     - action: utter_ask_change_dates
+
 
 - rule: Change checkin date
   steps:
@@ -164,3 +246,40 @@ rules:
   steps:
   - intent: ask_breakfast_price
   - action: utter_breakfast_price
+  wait_for_user_input: false
+
+
+
+- rule: book rooms
+  steps:
+  - action: action_check_rooms
+  - slot_was_set:
+    - room_proposal: true
+  - action: utter_ask_proceed_booking
+  #- action: action_listen
+  - intent: affirm
+  - action: utter_need_guest_info_for_booking
+  - action: name_form
+  - active_loop: name_form
+  - active_loop: null
+
+  - action: utter_name_values
+  # - action: utter_ask_confirmation_by_email_or_SMS
+  #- action: action_ask_contact_channel
+  - action: utter_ask_contact_channel
+    
+- rule: set contact_channel
+  steps:
+  - action: action_ask_contact_channel
+  - action: action_set_contact_channel
+# - rule: start booking process
+#   steps:
+#   - slot_was_set:
+#     - proceed_with_booking: true
+  
+
+
+- rule: use PROMO for testing
+  steps:
+  - intent: PROMO
+  - action: action_PROMO

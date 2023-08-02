@@ -1,11 +1,16 @@
 version: '3.1'
 intents:
-- start_conversation
 - affirm
 - ask_availability
 - ask_breakfast_price
 - ask_room_price
+- ask_address
+- ask_checkin_checkout_times
+- ask_airport_shuttle
+- ask_parking
+- ask_pet_policy
 - bot_challenge
+- ask_cancel_modify_reservation
 - change_checkin_date
 - change_checkout_date
 - change_num_guests
@@ -14,38 +19,50 @@ intents:
 - deny
 - goodbye
 - greet
+- handover_to_human
 - inform
 - inform_email
 - inform_mobile_number
 - inform_room_type
-- provide_names
 - name_form
+- provide_names
+- start_conversation
 - stop
-#- supply_contact_info
-
+- use_email
+- PROMO # this intent is needed to shorten testing
 actions:
-- action_custom_fallback
+#- action_email_or_sms
+- action_ask_contact_channel
+- action_set_contact_channel
 - action_calculate_num_nights
+- utter_ask_check_availability
 - action_check_rooms
-- action_email_or_sms
+- utter_num_room_types
+- utter_stay_form
+- utter_address
+- action_continue
+- utter_ask_proceed_booking
+- action_custom_fallback
 - action_reset_checkin_date
 - action_reset_checkout_date
 - action_reset_num_guests
+- action_send_email_confirmation
 - action_set_checkout_date
+- action_add_breakfast
 - action_validate_email
 - action_validate_slot_mappings
-- utter_ask_proceed_booking
-- utter_num_room_types
 - utter_introduction_ebutler
+- utter_booking_information_complete
 - validate_checkin_date
 - validate_email_form
 - validate_stay_form
 - validate_room_type_form
-
+- action_PROMO
 entities:
 - email
+#- phone
 - phone-number
-- mobile_number
+#- mobile_number
 - name
 - num_guests
 - time
@@ -57,7 +74,6 @@ entities:
     - unspecified
 - amount
 - contact_channel
-
 responses:
   utter_default:
   - text: Sorry I didn't get that. Can you rephrase?
@@ -87,18 +103,20 @@ responses:
   - text: Thank you for providing your name.
   utter_name_values:
   - text: Thank you {first_name} {last_name} for providing your name!
+  utter_ask_confirmation_by_email_or_SMS:
+  - text: Do you want to receive your booking confirmation by email or SMS?
   utter_ask_email:
   - text: Can you please provide me your email address?
   utter_email:
   - text: Thank you for providing {email} as your preferred email address.
-  utter_confirmationemail:
+  utter_confirmation_email:
   - text: We have sent a confirmation email to {email}.
   utter_explain_email:
   - text: We need your email to contact you afterwards. Otherwise, we cannot help you with your request.
   utter_no_email:
   - text: Hmm, I'm not sure that {email} is a valid email, please make sure to include the full address 😅.
   utter_ask_mobile_number:
-  - text: Could you tell me your phone number in international format '+49 xxx xxx, please?'
+  - text: Could you tell me your phone number in international format '+49 xxx xxx', please?'
   utter_mobile_number:
   - text: Thank you for providing {mobile_number} so that we can contact you.
   utter_confirmation:sms:
@@ -109,39 +127,90 @@ responses:
   - text: I will check the availability for {num_guests} guests.
   utter_stay_form:
   - text: Your requested stay is from {checkin_date} to {checkout_date}.
-  #- text: I will check the availability for {num_guests} guests from {checkin_date} to {checkout_date}.
   utter_ask_checkin_date:
   - text: Which date to you want to arrive at our hotel?
   utter_ask_checkout_date:
   - text: On which day do you want to checkout?
   utter_num_room_types:
-  #- text: You need rooms.
-  - text: You need {num_single_rooms} single rooms and {num_double_rooms} double rooms.
-
+  - text: You need {num_single_rooms} single room(s) and {num_double_rooms} double room(s) from {checkin_date} to {checkout_date}.
   utter_ask_num_single_rooms:
   - text: How many single rooms do you need?
   utter_ask_num_double_rooms:
   - text: How many double rooms do you need?
+  utter_ask_check_availability:
+  - text: Shall I check the availabilty for you?
+  utter_rooms_unavailable:
+  - text: Unfortunately, we do not have free rooms for your requested dates.
+  utter_ask_change_dates:
+  - text: Do you want to change the dates of your stay?
   utter_ask_proceed_booking:
   - text: Shall I book these rooms for you?
+  utter_need_guest_info_for_booking:
+  - text: "Thank you for chosing to stay at our hotel.\n
+    In order to proceed with your booking we need to collect some additional information."
   utter_standard_room_prices:
   - text: Our standard room prices are 80.00 Euros for a single room \n and 140.00 Euros for a double room.
   utter_special_room_prices:
-  - text: Special room prices and promotions are available throughout the year. \n Do you want to check prices for a specific date?
+  - text: "Special room prices and promotions are available throughout the year.\n
+    Do you want to check prices for a specific date?"
   utter_breakfast_price:
   - text: The price for the breakfast buffet is € 19.00 per person.
   utter_ask_add_breakfast:
   - text: Do you want to add breakfast to your booking?
+  utter_confirmation_add_breakfast:
+  - text: That is a good choice. We will add breakfast to your complete stay.
+  utter_add_breakfast_onsite:
+  - text: No problem. You can still add breakfast once you have arrived at the hotel.
+  utter_ask_contact_channel:
+  - text: How would you like to receive the booking confirmation?
+    buttons:
+    - title: Email
+      payload: /use_email # /utter_ask_email  #
+    - title: SMS
+      payload: /inform_mobile_number #/utter_ask_mobile_number
+  utter_booking_information_complete:
+  - text: Thank you, for providing the required information. We were able to book your stay in our system.
   utter_confirmation_by_email:
-  - text: We have sent you the confirmation by email.
+  - text: We have sent you the confirmation by email to {email}.
   utter_confirmation_by_sms:
   - text: We have sent you the confirmation by SMS.
-    
+  utter_address:
+  - text: "Our hotel adress is \n
+    Lakeside Hotel \n
+    Seestrasse 42 \n
+    74825 Konstanz "
+  utter_check-in_check-out_policy:
+  - text: Check-in is possible from 14:00 at the earliest. Check-out is possible at the latest by 11:00.
+  utter_cancellation_policy:
+  - text: "
+    You can cancel your reservation until 3 days before check-in without any cancellation fees.\n
+    If you do not check-in we will charge your credit card with the price for the first three nights."
+
+  utter_airport_shuttle:
+  - text: "
+    We do not provide a shuttle service to the airport, as we encourage our guests to use the train.\n
+    The train station is just 100 meters away from our hotel. However, we can book a taxi for your trip to the airport."
+  
+  utter_parking:
+  - text: You can park your car at our parking lot next to the hotel for 10 Euros per night.
+  
+  utter_pet_policy:
+  - text: "
+    We know that for some of our guests it is important to bring along their pets. In our hotel the following pet policy is applied:
+    Pets must be fully trained.\n
+    All pets must be restrained or kept on a leash on hotel property when not in the guest’s bedroom.\n
+    No pet should be left unattended.\n
+    They must comply with local legislation requirements.
+    "
+  utter_handover_to_human:
+  - text: "
+    I am sorry, that you are frustrated with my incapability to help you. I will connect you to a human agent.
+    "
+###
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
-
-# Slots  
+### Slots
 slots:
   first_name:
     type: text
@@ -151,7 +220,6 @@ slots:
       conditions:
       - active_loop: name_form
         requested_slot: first_name
-
   last_name:
     type: text
     influence_conversation: true
@@ -160,29 +228,24 @@ slots:
       conditions:
       - active_loop: name_form
         requested_slot: last_name
-
   email:
     type: text
     influence_conversation: true
     mappings:
-    - type: custom
-      
+    - type: from_entity
+      entity: email
   mobile_number:
-    type: text # phone
+    type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: phone-number
-    # - type: from_intent
-    #   intent: inform_mobile_number
-
   name:
     type: text
     influence_conversation: true
     mappings:
     - type: from_entity
       entity: name
-
   checkin_date_dummy:
     type: text
     influence_conversation: true
@@ -190,7 +253,6 @@ slots:
     - type: from_entity
       entity: time
       intent: ask_availability
-
   checkin_date:
     type: text
     influence_conversation: true
@@ -201,7 +263,6 @@ slots:
       - active_loop: stay_form
         requested_slot: checkin_date
     - type: custom
-      
   checkout_date:
     type: text
     influence_conversation: true
@@ -211,13 +272,11 @@ slots:
       conditions:
       - active_loop: stay_form
         requested_slot: checkout_date
-
   num_nights:
     type: float
     influence_conversation: true
     mappings:
     - type: custom
-      
   num_single_rooms:
     type: float
     mappings:
@@ -226,7 +285,6 @@ slots:
       conditions:
       - active_loop: room_type_form
         requested_slot: num_single_rooms
-
   num_double_rooms:
     type: float
     mappings:
@@ -235,43 +293,47 @@ slots:
       conditions:
       - active_loop: room_type_form
         requested_slot: num_double_rooms
-
   room_proposal:
     type: any
     mappings:
     - type: custom
-      
+  proceed_with_booking:
+    type: bool
+    initial_value: false
+    influence_conversation: true
+    mappings:
+    - type: custom
+  include_breakfast:
+    type: text
+    mappings:
+    - type: custom
+    influence_conversation: true
   contact_channel:
     type: text
     influence_conversation: true
+    initial_value: null
     mappings:
     - type: from_entity
       entity: contact_channel
-
-
-
-
+### Forms
 forms:
   name_form:
     required_slots:
     - first_name
     - last_name
-  
   email_form:
     required_slots:
     - email
-
   mobile_number_form:
     required_slots:
     - mobile_number
-
-
   room_type_form:
     required_slots:
     - num_single_rooms
     - num_double_rooms
-
   stay_form:
+    ignored_intents:
+    - inform_mobile_number
     required_slots:
     - checkin_date
     - checkout_date

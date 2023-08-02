@@ -15,7 +15,7 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
-
+###
 - intent: goodbye
   examples: |
     - cu
@@ -28,7 +28,7 @@ nlu:
     - see you around
     - bye bye
     - see you later
-
+###
 - intent: affirm
   examples: |
     - yes
@@ -38,6 +38,7 @@ nlu:
     - that sounds good
     - correct
     - yess please
+    - sure
     - sweet
     - cool,
     - yes...
@@ -65,7 +66,7 @@ nlu:
     - Yes please
     - Yes please!
     - Yes, I accept
-
+###
 - intent: deny
   examples: |
     - no
@@ -75,7 +76,8 @@ nlu:
     - don't like that
     - no way
     - not really
-
+    - nope
+###
 - intent: stop
   examples: |
     - stop
@@ -87,14 +89,14 @@ nlu:
     - bloody bot
     - damn
     - i give up
-
+###
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
-
+###
 - intent: inform
   examples: |
     - for ten people
@@ -115,7 +117,10 @@ nlu:
     - sunday
     - friday
     - 1
-
+    - on friday
+    - 2
+    - 3
+###
 - intent: provide_names
   examples: |
     - My name is John.
@@ -141,7 +146,7 @@ nlu:
     - you need to know my name
     - do you know my name?
     - do you need my name
-
+###
 - intent: inform_email
   examples: |
     - my email is [Elizabeth@yahoo.com](email)
@@ -165,18 +170,17 @@ nlu:
     - ok it's [Hee@yahoo.com](email)
     - ok its [P_Simpkins@Suehs.com](email)
     - here is my email: [Marcus.Miller@yahoo.com](email)
-
+###
 - intent: inform_mobile_number
   examples: |
-    - My mobile number is [123456789](phone)
-    - Call me at [987654321](phone)
-    - You can reach me at [555555555](phone)
-    - You can contact me at [9876543210](phone)
-    - My phone number is [888888888](phone)
-    - Contact me at [9999999999](phone)
-    - You can reach me on [555.555.5555](phone)
-
-
+    - My mobile number is [123456789](phone-number)
+    - Call me at [987654321](phone-number)
+    - You can reach me at [555555555](phone-number)
+    - You can contact me at [9876543210](phone-number)
+    - My phone number is [888888888](phone-number)
+    - Contact me at [9999999999](phone-number)
+    - You can reach me on [555.555.5555](phone-number)
+###
 - intent: ask_availability
   examples: |
     - I need a room for tonight.
@@ -189,7 +193,8 @@ nlu:
     - A double
     - We want to book 5 double and 1 single room
     - I need a room for tomorrow
-
+    - I need a room for tonight
+###
 - intent: ask_breakfast_price
   examples: |
     - Do you have complimentary breakfast?
@@ -200,7 +205,8 @@ nlu:
     - Is breakfast free
     - What is the price for breakfast
     - How much is breakfast
-
+    - Is breakfast included in the room price?
+###
 - intent: ask_room_price
   examples: |
     - How much is a single room per night
@@ -212,7 +218,7 @@ nlu:
     - price per night
     - how much do you charge per night
     - what is the price per night?
-
+###
 - intent: confirmation_by_email
   examples: |
     - Send the confirmation by [mail](contact_channel)
@@ -223,6 +229,7 @@ nlu:
     - send an [email](contact_channel)
     - Could you send me the booking details by [mail](contact_channel)?
     - Can you please send me the details by [mail](contact_channel).
+###
 - intent: confirmation_by_sms
   examples: |
     - Send the confirmation by [sms](contact_channel)
@@ -232,3 +239,131 @@ nlu:
     - [SMS](contact_channel) confirmation
     - send a [text message](contact_channel)
     - Could you send me the booking details by [SMS](contact_channel)?
+###
+- intent: ask_cancel_modify_reservation
+  examples: |
+    - Can I cancel or modify my reservation
+    - What is your cancellation policy?
+    - Am I allowed to make changes to my booking?
+    - If my plans change, can I modify my reservation?
+    - Are there any fees for canceling my reservation?
+    - How far in advance can I cancel or modify my booking?
+    - Is there a deadline for canceling without penalty?
+    - Can I get a refund if I need to cancel my reservation?
+    - What happens if I need to change the dates of my stay?
+    - Do you offer a flexible cancellation policy?
+    - Can I cancel my reservation online?
+  ###
+- intent: ask_address
+  examples: |
+    - Can you tell me the address of your hotel?
+    - What is your location/address?
+    - Where are you located?
+    - What's your address?
+    - Can you tell me where you're situated?
+    - I need to know your location.
+    - Where can I find you?
+    - What's the address of your establishment?
+    - Please provide me with your address.
+    - Tell me where I can locate you.
+    - What's the physical location of your hotel?
+    - I'm looking for your address, can you help?
+###
+- intent: ask_checkin_checkout_times
+  examples: |
+    - What time is check-in and check-out?
+    - When can I check in and out?
+    - What are the check-in and check-out hours?
+    - At what time is the check-in and check-out?
+    - When do I need to check in and out?
+    - What are your check-in and check-out policies?
+    - Can you tell me the check-in and check-out timings?
+    - When are guests allowed to check in and out?
+    - What are the hours for check-in and check-out?
+    - Please inform me of the check-in and check-out times.
+    - At what hour do I need to check in and check out?
+    - What's the policy for check-in and check-out hours?
+    - When am I allowed to check in and out of my room?
+    - What time do I have to check in and check out?
+###
+- intent: ask_airport_shuttle
+  examples: |
+    - Is there a shuttle service available to/from the airport?
+    - Does the hotel offer a shuttle service to and from the airport?
+    - Is there transportation provided between the hotel and the airport?
+    - Can I use a shuttle to reach the hotel from the airport?
+    - Is there a shuttle available for airport transfers?
+    - Does the hotel have an airport shuttle service?
+    - Are there any shuttle options for getting to the airport from the hotel?
+    - Is airport transportation available at the hotel?
+    - Can you tell me if there's a shuttle service for airport transfers?
+    - Is it possible to use a shuttle for airport transportation?
+    - Does the hotel provide a shuttle to and from the airport?
+###
+- intent: ask_parking
+  examples: |
+    - What are the parking options and fees?
+    - Where is the designated parking area?
+    - What are the parking arrangements for cars?
+    - Can you guide me to the car parking location?
+    - Where should I park my vehicle?
+    - What are the car parking options available?
+    - Can you provide information about parking spots?
+    - I need to know where to park my car.
+    - What are the places for parking cars?
+    - Where can I leave my car?
+    - Can you tell me about the car parking facilities?
+    - Do you have a garage?
+    - What is the price for parking?
+    - Can you tell me the parking fees?
+    - How much do I need to pay for parking?
+    - What are the parking charges?
+    - What is the cost of parking my car?
+    - Can you inform me about the parking expenses?
+    - How expensive is parking here?
+    - What are the rates for parking?
+    - I'd like to know the parking costs, please.
+    - What is the fee for parking my vehicle?
+###
+- intent: ask_pet_policy
+  examples: |
+    - Can I bring my pet to the hotel?
+    - Is the hotel pet-friendly?
+    - Are pets allowed in the rooms?
+    - Do you accept pets?
+    - What is the hotel's policy on pets?
+    - Are there any restrictions on bringing pets?
+    - Are there any pet fees?
+    - Can I stay with my furry friend?
+    - Are dogs allowed in the hotel?
+    - Do you have a pet policy?
+    - Are cats welcome at the hotel?
+    - Are there any size restrictions for pets?
+    - Can I bring my emotional support animal?
+    - Is there a weight limit for pets?
+    - Are there designated pet areas in the hotel?
+    - Are service animals allowed?
+    - Are there any breed restrictions for pets?
+    - What are the pet amenities provided?
+    - Can I leave my pet unattended in the room?
+    - Are there any rules for pets in common areas?
+###
+- intent: handover_to_human
+  examples: |
+    - Can I talk to a human?
+    - I need to speak with a real person.
+    - Transfer me to a human agent.
+    - Can you connect me to a live agent?
+    - I want to talk to someone from customer support.
+    - Is there a human I can chat with?
+    - Let me speak to a real representative.
+    - I'd like to get assistance from a person.
+    - Connect me with a human assistant, please.
+    - Can you put me through to a human support agent?
+### 
+- intent: PROMO # needed for testing
+  examples: |
+    - I have a promo code 
+    - PROMO
+    - promotionD
+    - special promo
