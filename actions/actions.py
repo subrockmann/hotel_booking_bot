@@ -6,7 +6,7 @@
 
 import email
 from html import entities
-import re
+import re, os, dotenv
 from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker, ValidationAction, FormValidationAction
@@ -21,12 +21,14 @@ from rasa_sdk.events import (
     UserUtteranceReverted,
     ConversationPaused,
     EventType,
+    FollowupAction,
 )
 
 from datetime import datetime as dt
-from email_validator import validate_email, EmailNotValidError
+from email_validator import validate_email as ve
+from email_validator import EmailNotValidError
 
-# import imp
+# import impaction_ask_contact_channel
 import importlib
 
 from sqlalchemy import except_
@@ -176,36 +178,88 @@ class ValidateEmailForm(FormValidationAction):
         """ "
         check if an email entity was extracted
         """
-        entities = tracker.latest_message["entities"]
-        for e in entities:
-            if e.get("entity") == "email":
-                email = e.get("value")
-                print(f"Email was provided: {email}")
+        print("validate_email_form triggered")
+        email = None
+        try:
+            email = tracker.get_slot('email')
+            #entities = tracker.latest_message["entities"]
+            # #dispatcher.utter_message(text=str(entities))  # only for debugging purposes
 
-                """Validate email."""
-                try:
-                    # Validate & take the normalized form of the email
-                    # address for all logic beyond this point (especially
-                    # before going to a database query where equality
-                    # does not take into account normalization).
+            # # get the value from the 'email' entity if it has been provided
+            # for e in entities:
+            #     if e.get("entity") == "email":
+            #         email = e.get("value")
+            #         # print(f"Email was provided: {email}")
+            #     else:
+            #         # print("NO Email was provided")
+            #         dispatcher.utter_message(response="utter_no_email")
+            print(f"Your email is {email}")
+        except:
+            email = None
+            dispatcher.utter_message(response="utter_no_email")
 
-                    # email = validate_email(entities.get("email")).email
-                    # email = validate_email(slot_value).email
-                    # print(email)
-                    dispatcher.utter_message(response="utter_email")
-                    return {"email": email}
+        if email is not None:
+            # validate the email
+            print(f"validating your email: {email}")
 
-                except EmailNotValidError as e:
-                    # email is not valid, exception message is human-readable
-                    print(str(e))
-                    dispatcher.utter_message(response="utter_no_email")
-                    dispatcher.utter_message(text=str(e))
-                    dispatcher.utter_message(text="Validate predefined slots")
-                    return {"email": None}
+            try:
+                # Check that the email address is valid. Turn on check_deliverability
+                # for first-time validations like on account creation pages (but not
+                # login pages).
 
-            else:
-                print("no email")
-                return {"email": None}
+
+                emailinfo = ve(email, check_deliverability=False)
+                #validate_email(email)
+                  # After this point, use only the normalized form of the email address,
+                # especially before going to a database query.
+                email = emailinfo.normalized
+                print(f"normalized email {email}")
+                #return [SlotSet("email", email)] # not allowed for form actions
+                return {"email": email}
+            except EmailNotValidError as e:
+                # The exception message is human-readable explanation of why it's
+                # not a valid (or deliverable) email address.
+                print("Email error")
+                print(str(e))
+                dispatcher.utter_message(response="utter_no_email")
+                dispatcher.utter_message(text=str(e))
+                #print(e)
+                email = None
+                return {"email": email}
+        else:
+            dispatcher.utter_message(response="utter_no_email")
+            return {"email": email}
+    # [SlotSet("email", email)]
+        # entities = tracker.latest_message["entities"]
+        # for e in entities:
+        #     if e.get("entity") == "email":
+        #         email = e.get("value")
+        #         print(f"Email was provided: {email}")
+
+        #         """Validate email."""
+        #         try:
+        #             # Validate & take the normalized form of the email
+        #             # address for all logic beyond this point (especially
+        #             # before going to a database query where equality
+        #             # does not take into account normalization).
+
+        #             # email = validate_email(entities.get("email")).email
+        #             # email = validate_email(slot_value).email
+        #             # print(email)
+        #             dispatcher.utter_message(response="utter_email")
+        #             return {"email": email}
+
+        #         except EmailNotValidError as e:
+        #             # email is not valid, exception message is human-readable
+        #             print(str(e))
+        #             dispatcher.utter_message(response="utter_no_email")
+        #             dispatcher.utter_message(text=str(e))
+        #             dispatcher.utter_message(text="Validate predefined slots")
+        #             return {"email": None}
+
+        #     else:
+        #         print("no email")
+        #         return {"email": None}
 
 
 class ValidatePredefinedSlots(ValidationAction):
@@ -258,36 +312,34 @@ class ValidatePredefinedSlots(ValidationAction):
         """ "
         check if an email entity was extracted
         """
-        entities = tracker.latest_message["entities"]
-        for e in entities:
-            if e.get("entity") == "email":
-                email = e.get("value")
-                print(f"Email was provided: {email}")
+        print("action_validate_email triggered")
 
-                """Validate email."""
-                try:
-                    # Validate & take the normalized form of the email
-                    # address for all logic beyond this point (especially
-                    # before going to a database query where equality
-                    # does not take into account normalization).
 
-                    # email = validate_email(entities.get("email")).email
-                    # email = validate_email(slot_value).email
-                    # print(email)
-                    dispatcher.utter_message(response="utter_email")
-                    return {"email": email}
+        email = None
+        try:
+            email = tracker.get_slot('email')
 
-                except EmailNotValidError as e:
-                    # email is not valid, exception message is human-readable
-                    print(str(e))
-                    dispatcher.utter_message(response="utter_no_email")
-                    dispatcher.utter_message(text=str(e))
-                    dispatcher.utter_message(text="Validate predefined slots")
-                    return {"email": None}
 
-            else:
-                print("no email")
-                return {"email": None}
+            """Validate email."""
+            try:
+                # Validate & take the normalized form of the email
+                # address for all logic beyond this point (especially
+                # before going to a database query where equality
+                # does not take into account normalization).
+                ve(email)
+                # dispatcher.utter_message(response="utter_email") # redundant because it is included in email_form_validation
+                return {"email": email}
+
+            except EmailNotValidError as e:
+                # email is not valid, exception message is human-readable
+                print(str(e))
+                dispatcher.utter_message(response="utter_no_email")
+                dispatcher.utter_message(text=str(e))
+                dispatcher.utter_message(text="Validate predefined slots")
+                return [{"email": None}, FollowupAction("email_form")]
+        except:
+            print("no email")
+            return {"email": None}
 
     def validate_mobile_number(
         self,
@@ -315,7 +367,8 @@ class ValidatePredefinedSlots(ValidationAction):
                     # )
                     if valid_phone:
                         dispatcher.utter_message(response="utter_mobile_number")
-                        return {"mobile_number": phone_num_formated}
+                        [{"mobile_number": phone_num_formated}, FollowupAction("utter_mobile_number")]
+                        #return {"mobile_number": phone_num_formated}
                     else:
                         dispatcher.utter_message(
                             text=f"Phone: {phone_num_formated} is not a valid number."
@@ -327,7 +380,7 @@ class ValidatePredefinedSlots(ValidationAction):
                 except:
                     print("validation failed")
                     dispatcher.utter_message(
-                        text=f"Unfortunately we could not validate this phone number: {phone_num_formated}."
+                        text=f"Unfortunately we could not validate this phone number: {phone}."
                     )
                     FollowupAction(name="mobile_number_form")
                     return {"mobile_number": None}
@@ -339,6 +392,7 @@ class ValidatePredefinedSlots(ValidationAction):
                 )
                 FollowupAction(name="mobile_number_form")
                 return {"mobile_number": None}
+
 
 
 class ActionValidateEmail(Action):
@@ -357,24 +411,28 @@ class ActionValidateEmail(Action):
         """
         email = None
         try:
-            entities = tracker.latest_message["entities"]
-            dispatcher.utter_message(text=str(entities))  # only for debugging purposes
+            email = tracker.get_slot('email')
+            print(f"Your email is {email}")
+            #entities = tracker.latest_message["entities"]
+            # #dispatcher.utter_message(text=str(entities))  # only for debugging purposes
 
-            # get the value from the 'email' entity if it has been provided
-            for e in entities:
-                if e.get("entity") == "email":
-                    email = e.get("value")
-                    # print(f"Email was provided: {email}")
-                else:
-                    # print("NO Email was provided")
-                    dispatcher.utter_message(response="utter_no_email")
+            # # get the value from the 'email' entity if it has been provided
+            # for e in entities:
+            #     if e.get("entity") == "email":
+            #         email = e.get("value")
+            #         # print(f"Email was provided: {email}")
+            #     else:
+            #         # print("NO Email was provided")
+            #         dispatcher.utter_message(response="utter_no_email")
+            return [SlotSet("email", email)]
         except:
             email = None
-
+            dispatcher.utter_message(response="utter_no_email")
+            return [SlotSet("email", email), FollowupAction("email_form")]
         if email is not None:
             # validate the email
             try:
-                validate_email(email)
+                ve(email)
                 # print(email)
             except EmailNotValidError as e:
                 dispatcher.utter_message(response="utter_no_email")
@@ -388,7 +446,7 @@ class ActionValidateEmail(Action):
 
 class ActionEmailOrSMS(Action):
     def name(self) -> Text:
-        return "action_email_or_sms"
+        return "action_ask_contact_channel"
 
     def run(
         self,
@@ -398,38 +456,87 @@ class ActionEmailOrSMS(Action):
     ) -> List[Dict[Text, Any]]:
 
         # num_guests = tracker.get_slot('num_guests')
-        buttons = [
-            {
-                "payload": '/confirmation_by_email{"contact_channel":"email"}',
-                "title": "Email",
-            },
-            {
-                "payload": '/confirmation_by_sms{"contatct_channel":"sms"}',
-                "title": "SMS",
-            },
-        ]
+        # buttons = [
+        #     {
+        #         "payload": '/confirmation_by_email{"contact_channel":"email"}',
+        #         "title": "Email",
+        #     },
+        #     {
+        #         "payload": '/confirmation_by_sms{"contatct_channel":"sms"}',
+        #         "title": "SMS",
+        #     },
+        # ]
+
+        buttons = [{"title": "SMS", "payload": "/inform_contact_channel{\"contact_channel\": \"SMS\"}"},
+                   {"title": "Email", "payload": "/inform_contact_channel{\"contact_channel\": \"Email\"}"}]
+
+        # Provide a message with buttons to ask the user about their preference
+        # message = "How would you like to receive information?"
+        # dispatcher.utter_message(text=message, buttons=buttons)
+
+
 
         dispatcher.utter_message(
             text="How would you like to receive the booking confirmation?",
             buttons=buttons,
         )
 
-        ##### EMAIL TESTS
-        subject = "A test mail sent by Python. It has an attachment."
-        content = """Hello,
-        This is a simple mail.
-        Thank You
-        """
-        email = tracker.get_slot("email")
+        # Set the slot 'preference' to None to clear any previous value
+        return [SlotSet("contact_channel", None), FollowupAction("action_set_contact_channel")]
+    
+        # preference = tracker.latest_message.get('entities')[0]['value']
 
-        utils.send_email(
-            email,
-            subject,
-            content,
-        )
+        # if preference == "SMS":
+        #     print("action_set_contact_channel - SMS")
+        #     dispatcher.utter_message(response="utter_ask_mobile_number")
+        #     return [SlotSet("contact_channel", preference), FollowupAction("mobile_number_form")]
+        # elif preference == "Email":
+        #     print("action_set_contact_channel - email")
+        #     dispatcher.utter_message(response="utter_ask_email")
+        #     # Set the 'preference' slot to the user's choice
+        #     return [SlotSet("contact_channel", preference), FollowupAction("email_form")]
+        # else:
+        #     print("action_set_contact_channel - ELSE")
+
+# '        ##### EMAIL TESTS
+#         subject = "A test mail sent by Python. It has an attachment."
+#         content = """Hello,
+#         This is a simple mail.
+#         Thank You
+#         """
+#         email = tracker.get_slot("email")
+
+#         utils.send_email(
+#             email,
+#             subject,
+#             content,'
+#       )
         ######
 
         return []
+    
+class ActionSetContactChannel(Action):
+    def name(self) -> Text:
+        return "action_set_contact_channel"
+
+    def run(
+        self, dispatcher: CollectingDispatcher, tracker: Tracker, domain: Dict[Text, Any]
+    ) -> List[Dict[Text, Any]]:
+        # Get the user's preference from the intent
+        preference = tracker.get_slot('contact_channel')
+        #preference = tracker.latest_message.get('entities')[0]['value']
+
+        if preference == "SMS":
+            print("action_set_contact_channel - SMS")
+            dispatcher.utter_message(response="utter_ask_mobile_number")
+            return [SlotSet("contact_channel", preference), FollowupAction("mobile_number_form")]
+        elif preference == "Email":
+            print("action_set_contact_channel - email")
+            dispatcher.utter_message(response="utter_ask_email")
+            # Set the 'preference' slot to the user's choice
+            return [SlotSet("contact_channel", preference), FollowupAction("email_form")]
+        else:
+            print(f"action_set_contact_channel - ELSE {preference}")
 
 
 class ActionCalculateNumNights(Action):
@@ -472,6 +579,34 @@ class ActionCalculateNumNights(Action):
             return []
         else:
             return [SlotSet("num_nights", num_nights)]
+
+###################
+class ActionAddBreakfast(Action):
+    def name(self) -> Text:
+        return "action_add_breakfast"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]
+    ) -> List[Dict[Text, Any]]:
+        # Triggering an intent from a custom action
+
+        # if tracker.slots.get("slot_name"):
+        #     slot_value = tracker.get_slot("slot_name")
+        #     dispatcher.utter_message(f"The value of slot 'slot_name' is: {slot_value}")
+
+        if tracker.get_slot("room_proposal"):
+            return [SlotSet("include_breakfast", "yes")]
+        else:
+            # in the rare case that a customer wants breakfast but has not specified the dates, we start the stay form
+            trigger_intent = "ask_availability"
+            return [UserUtteranceReverted(),SlotSet("include_breakfast", "yes"), {"intent": trigger_intent}]
+
+
+
+
 
 
 ######################
@@ -564,12 +699,14 @@ class ActionCheckRoom(Action):
 
         # TODO:  include business logic for validating availabiliy vs. request
         if room_proposal["availability_issue"] == None:
-            message = f"""We can offer you the following rooms:
-            \n Checkin date: {checkin_date}
-            \n Checkout date: {checkout_date}
-            \n {room_proposal["num_single_rooms_available"]} single rooms for {room_proposal["single_room_rate"]} Euros per room per night.
-            """
+            message = f"""We can offer you the following rooms: 
+            Checkin date: {checkin_date}
+            Checkout date: {checkout_date}
+            {room_proposal["num_single_rooms_available"]} single rooms for {room_proposal["single_room_rate"]} Euros per room per night.
+            {room_proposal["num_double_rooms_available"]} double rooms for {room_proposal["double_room_rate"]} Euros per room per night."""
             dispatcher.utter_message(text=message)
+            #dispatcher.utter_message(response = "utter_ask_proceed_booking")
+            return[SlotSet("room_proposal", True)] # , SlotSet("proceed_with_booking", True), FollowupAction("action_listen")]
         # message = f"Number of guests: {num_guests}"
         else:
             # message = f"Single room rate: {room_proposal.get('single_room_rate')}"
@@ -577,7 +714,8 @@ class ActionCheckRoom(Action):
                 f"There is an availability issue {room_proposal['availability_issue']}"
             )
             dispatcher.utter_message(text=message)
-        return [SlotSet("room_proposal", room_proposal)]
+            dispatcher.utter_message(response = "utter_ask_change_dates")
+            return [SlotSet("room_proposal", False), FollowupAction("action_listen")]
 
 
 class ActionNavigation(Action):
@@ -597,3 +735,101 @@ class ActionNavigation(Action):
         ]
 
         return []
+    
+###
+
+import smtplib, ssl
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+
+
+#send_email(receiver_email, subject, content)
+class ActionSendEmailConfirmation(Action):
+    def name(self) -> Text:
+        return "action_send_email_confirmation"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        
+
+
+        # take environment variables from .env.
+        SENDER_ADDRESS = os.getenv("SENDER_ADDRESS")
+        SENDER_EMAIL_PASSWORD = os.getenv("SENDER_EMAIL_PASSWORD")
+        SMTP_STRING = os.getenv("SMTP_STRING")
+        SMTP_PORT = os.getenv("SMTP_PORT")
+
+        # Create a secure SSL context
+        context = ssl.create_default_context()
+
+        # Mockup for quick testing:
+        receiver_email = "newinmunich@aol.com"
+        subject = "Booking Confirmation"
+        content = "Lakeside Hotel is confirming your booking."
+        #def send_email(receiver_email, subject, content):
+            # Setup the MIME
+        message = MIMEMultipart()
+        message["From"] = SENDER_ADDRESS
+        message["To"] = receiver_email
+        message["Subject"] = subject
+        # The body and the attachments for the mail
+        message.attach(MIMEText(content, "plain"))
+        text = message.as_string()
+
+        # Create SMTP session for sending the mail
+    #try:
+        # session = smtplib.SMTP(SMTP_STRING, SMTP_PORT)
+        # session.connect(SMTP_STRING, SMTP_PORT)
+        # print("trying to login")
+        # session.login(SENDER_ADDRESS, SENDER_EMAIL_PASSWORD)
+        # print("connected")
+        # #session.ehlo()
+        # session.starttls(context=context)  # enable security
+
+        # print("started tls")
+ 
+        # print("Sending email")
+        # session.sendmail(SENDER_ADDRESS, receiver_email, text)
+        # session.quit()
+        # print("Mail Sent")
+    #except:
+            #print("Email process failed")
+            #return
+
+        #send_email(receiver_email, subject, content)
+        return [FollowupAction("utter_confirmation_by_email")]
+
+
+
+###########################
+
+
+
+
+class ActionPROMO(Action):
+    def name(self) -> Text:
+        return "action_PROMO"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        
+
+        date_format = "%Y-%m-%d"
+        checkin_date = dt.strptime("2023-12-02", date_format)
+        checkout_date = dt.strptime("2023-12-02", date_format)
+
+        return [SlotSet("checkin_date", get_date(checkin_date)),
+                SlotSet("checkout_date", get_date(checkout_date)),
+                SlotSet("num_single_rooms", 1),
+                SlotSet("num_double_rooms", 2),
+
+                ]
