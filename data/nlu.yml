@@ -15,7 +15,6 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
-###
 - intent: goodbye
   examples: |
     - cu
@@ -28,7 +27,7 @@ nlu:
     - see you around
     - bye bye
     - see you later
-###
+    - Nick
 - intent: affirm
   examples: |
     - yes
@@ -66,7 +65,6 @@ nlu:
     - Yes please
     - Yes please!
     - Yes, I accept
-###
 - intent: deny
   examples: |
     - no
@@ -77,7 +75,6 @@ nlu:
     - no way
     - not really
     - nope
-###
 - intent: stop
   examples: |
     - stop
@@ -89,14 +86,12 @@ nlu:
     - bloody bot
     - damn
     - i give up
-###
 - intent: bot_challenge
   examples: |
     - are you a bot?
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
-###
 - intent: inform
   examples: |
     - for ten people
@@ -120,33 +115,18 @@ nlu:
     - on friday
     - 2
     - 3
-###
-- intent: provide_names
-  examples: |
-    - My name is John.
-    - Call me Alex.
-    - Hi, I'm Sarah.
-    - You can refer to me as Mr. Smith.
-    - I go by the name Jessica.
-    - My friends call me Mike.
-    - Name's David, nice to meet you.
-    - You can address me as Dr. Anderson.
-    - Just call me Sam.
-    - They call me Lily.
-    - You can call me by my nickname, Charlie.
-    - Most people know me as Robert.
-    - You can call me Ms. Johnson.
-    - I'm known as Jennifer.
-    - You can refer to me as Professor Davis.
-    - Please address me as Mrs. Thompson.
-    - You can call me by my first name, Amy.
-    - You can refer to me as Captain Adams.
-    - Please address me as Sir James.
-    - i want to give you my name
-    - you need to know my name
-    - do you know my name?
-    - do you need my name
-###
+    - Donald
+    - Duck
+    - 4
+    - Sunday
+    - Mouse
+    - Mickey
+    - Nick
+    - Nolte
+    - Monday
+    - [2023-08-20](phone-number)
+    - [2023-08-24](phone-number)
+    - 0
 - intent: inform_email
   examples: |
     - my email is [Elizabeth@yahoo.com](email)
@@ -170,7 +150,10 @@ nlu:
     - ok it's [Hee@yahoo.com](email)
     - ok its [P_Simpkins@Suehs.com](email)
     - here is my email: [Marcus.Miller@yahoo.com](email)
-###
+    - my email is [mrx@aol.com](email)
+    - my email is [mrsx@gmail.com](email)
+    - [mrx@mail.com](email)
+    - [mr@gmail.com](email)
 - intent: inform_mobile_number
   examples: |
     - My mobile number is [123456789](phone-number)
@@ -180,7 +163,6 @@ nlu:
     - My phone number is [888888888](phone-number)
     - Contact me at [9999999999](phone-number)
     - You can reach me on [555.555.5555](phone-number)
-###
 - intent: ask_availability
   examples: |
     - I need a room for tonight.
@@ -194,7 +176,10 @@ nlu:
     - We want to book 5 double and 1 single room
     - I need a room for tomorrow
     - I need a room for tonight
-###
+    - I need a room for friday
+    - I need a room on [2023-08-10](phone-number)
+    - I need a room for [2023-08-12](phone-number)
+    - I need a room tomorrow
 - intent: ask_breakfast_price
   examples: |
     - Do you have complimentary breakfast?
@@ -206,7 +191,6 @@ nlu:
     - What is the price for breakfast
     - How much is breakfast
     - Is breakfast included in the room price?
-###
 - intent: ask_room_price
   examples: |
     - How much is a single room per night
@@ -218,7 +202,6 @@ nlu:
     - price per night
     - how much do you charge per night
     - what is the price per night?
-###
 - intent: confirmation_by_email
   examples: |
     - Send the confirmation by [mail](contact_channel)
@@ -229,7 +212,6 @@ nlu:
     - send an [email](contact_channel)
     - Could you send me the booking details by [mail](contact_channel)?
     - Can you please send me the details by [mail](contact_channel).
-###
 - intent: confirmation_by_sms
   examples: |
     - Send the confirmation by [sms](contact_channel)
@@ -239,7 +221,6 @@ nlu:
     - [SMS](contact_channel) confirmation
     - send a [text message](contact_channel)
     - Could you send me the booking details by [SMS](contact_channel)?
-###
 - intent: ask_cancel_modify_reservation
   examples: |
     - Can I cancel or modify my reservation
@@ -253,7 +234,6 @@ nlu:
     - What happens if I need to change the dates of my stay?
     - Do you offer a flexible cancellation policy?
     - Can I cancel my reservation online?
-  ###
 - intent: ask_address
   examples: |
     - Can you tell me the address of your hotel?
@@ -268,7 +248,6 @@ nlu:
     - Tell me where I can locate you.
     - What's the physical location of your hotel?
     - I'm looking for your address, can you help?
-###
 - intent: ask_checkin_checkout_times
   examples: |
     - What time is check-in and check-out?
@@ -285,7 +264,6 @@ nlu:
     - What's the policy for check-in and check-out hours?
     - When am I allowed to check in and out of my room?
     - What time do I have to check in and check out?
-###
 - intent: ask_airport_shuttle
   examples: |
     - Is there a shuttle service available to/from the airport?
@@ -299,7 +277,6 @@ nlu:
     - Can you tell me if there's a shuttle service for airport transfers?
     - Is it possible to use a shuttle for airport transportation?
     - Does the hotel provide a shuttle to and from the airport?
-###
 - intent: ask_parking
   examples: |
     - What are the parking options and fees?
@@ -324,7 +301,6 @@ nlu:
     - What are the rates for parking?
     - I'd like to know the parking costs, please.
     - What is the fee for parking my vehicle?
-###
 - intent: ask_pet_policy
   examples: |
     - Can I bring my pet to the hotel?
@@ -347,7 +323,6 @@ nlu:
     - What are the pet amenities provided?
     - Can I leave my pet unattended in the room?
     - Are there any rules for pets in common areas?
-###
 - intent: handover_to_human
   examples: |
     - Can I talk to a human?
@@ -360,10 +335,10 @@ nlu:
     - I'd like to get assistance from a person.
     - Connect me with a human assistant, please.
     - Can you put me through to a human support agent?
-### 
-- intent: PROMO # needed for testing
+- intent: PROMO
   examples: |
-    - I have a promo code 
+    - I have a promo code
     - PROMO
     - promotionD
     - special promo
+    - promo

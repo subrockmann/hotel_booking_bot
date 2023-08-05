@@ -67,13 +67,11 @@ rules:
   - active_loop: null
   - slot_was_set: 
     - requested_slot: null
-  #- action: utter_email # already included in email slot validation
   wait_for_user_input: false
 
 ### Name form
 - rule: Activate name_form
   steps:
-  - intent: provide_names
   - action: name_form
   - active_loop: name_form
 
@@ -113,6 +111,13 @@ rules:
 - rule: get phone number
   steps:
   - intent: inform_mobile_number
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
+#  - active_loop: null
+  
+- rule: get phone number
+  steps:
+  - intent: confirmation_by_sms
   - action: mobile_number_form
   - active_loop: mobile_number_form
 #  - active_loop: null
@@ -168,6 +173,12 @@ rules:
   - action: action_check_rooms
   wait_for_user_input: false  
 
+- rule: Deny proceed with booking
+  steps: 
+  - action: utter_ask_proceed_booking
+  - intent: deny
+  - action: utter_change_stay_info
+
   #wait_for_user_input: false
 
 # - rule: Only proceed with available rooms
@@ -211,14 +222,14 @@ rules:
 #     - intent: affirm
 #     - action: action_email_or_sms
 
-# - rule: No rooms available
-#   condition:
-#   - slot_was_set:
-#     - room_proposal: false
-#     steps: 
-#     - action: action_check_rooms
-#     - action: utter_rooms_unavailable
-#     - action: utter_ask_change_dates
+
+- rule: No rooms available
+  condition:
+    - slot_was_set:
+        - room_proposal: false
+  steps: 
+    - action: utter_rooms_unavailable
+    - action: utter_change_stay_info
 
 
 - rule: Change checkin date
@@ -235,6 +246,26 @@ rules:
   - action: stay_form
   - active_loop: stay_form
 
+- rule: Change number of single rooms
+  steps:
+  - intent: change_num_single_rooms
+  - action: action_reset_num_single_rooms
+  - active_loop: room_type_form
+  - slot_was_set:
+    - num_single_rooms: null
+  - action: room_type_form
+
+  - action: room_type_form
+  - active_loop: room_type_form
+
+- rule: Change number of double rooms
+  steps:
+  - intent: change_num_double_rooms
+  - action: action_reset_num_double_rooms
+  - action: room_type_form
+  - active_loop: room_type_form
+
+
 - rule: Change number of guests
   steps:
   - intent: change_num_guests
@@ -248,6 +279,11 @@ rules:
   - action: utter_breakfast_price
   wait_for_user_input: false
 
+- rule: Deny availability 
+  steps:  
+  - action: utter_ask_check_availability
+  - intent: deny
+  - action: utter_change_stay_info
 
 
 - rule: book rooms

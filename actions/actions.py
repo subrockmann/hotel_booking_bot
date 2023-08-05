@@ -22,6 +22,7 @@ from rasa_sdk.events import (
     ConversationPaused,
     EventType,
     FollowupAction,
+    ActiveLoop
 )
 
 from datetime import datetime as dt
@@ -133,7 +134,7 @@ class ValidateRoomTypeForm(FormValidationAction):
                 )  ### better explanation would be helpful
                 return {"num_single_rooms": None}
             else:
-                dispatcher.utter_message(text = "Thanks for providing the number of single rooms.")
+                #dispatcher.utter_message(text = "Thanks for providing the number of single rooms.") # replaced by utter_num_room_types
                 return {"num_single_rooms": slot_value}
         else:
             dispatcher.utter_message(
@@ -229,37 +230,6 @@ class ValidateEmailForm(FormValidationAction):
         else:
             dispatcher.utter_message(response="utter_no_email")
             return {"email": email}
-    # [SlotSet("email", email)]
-        # entities = tracker.latest_message["entities"]
-        # for e in entities:
-        #     if e.get("entity") == "email":
-        #         email = e.get("value")
-        #         print(f"Email was provided: {email}")
-
-        #         """Validate email."""
-        #         try:
-        #             # Validate & take the normalized form of the email
-        #             # address for all logic beyond this point (especially
-        #             # before going to a database query where equality
-        #             # does not take into account normalization).
-
-        #             # email = validate_email(entities.get("email")).email
-        #             # email = validate_email(slot_value).email
-        #             # print(email)
-        #             dispatcher.utter_message(response="utter_email")
-        #             return {"email": email}
-
-        #         except EmailNotValidError as e:
-        #             # email is not valid, exception message is human-readable
-        #             print(str(e))
-        #             dispatcher.utter_message(response="utter_no_email")
-        #             dispatcher.utter_message(text=str(e))
-        #             dispatcher.utter_message(text="Validate predefined slots")
-        #             return {"email": None}
-
-        #     else:
-        #         print("no email")
-        #         return {"email": None}
 
 
 class ValidatePredefinedSlots(ValidationAction):
@@ -301,97 +271,97 @@ class ValidatePredefinedSlots(ValidationAction):
             # FollowupAction(name="stay_form") # not necessary due to detected intent
             return {"checkin_date": get_date(slot_value)}
 
-    def validate_email(
-        self,
-        slot_value: Any,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: DomainDict,
-    ) -> Dict[Text, Any]:
+    # def validate_email(
+    #     self,
+    #     slot_value: Any,
+    #     dispatcher: CollectingDispatcher,
+    #     tracker: Tracker,
+    #     domain: DomainDict,
+    # ) -> Dict[Text, Any]:
 
-        """ "
-        check if an email entity was extracted
-        """
-        print("action_validate_email triggered")
-
-
-        email = None
-        try:
-            email = tracker.get_slot('email')
+    #     """ "
+    #     check if an email entity was extracted
+    #     """
+    #     print("action_validate_predefined slot email triggered")
 
 
-            """Validate email."""
-            try:
-                # Validate & take the normalized form of the email
-                # address for all logic beyond this point (especially
-                # before going to a database query where equality
-                # does not take into account normalization).
-                ve(email)
-                # dispatcher.utter_message(response="utter_email") # redundant because it is included in email_form_validation
-                return {"email": email}
+    #     email = None
+    #     try:
+    #         email = tracker.get_slot('email')
 
-            except EmailNotValidError as e:
-                # email is not valid, exception message is human-readable
-                print(str(e))
-                dispatcher.utter_message(response="utter_no_email")
-                dispatcher.utter_message(text=str(e))
-                dispatcher.utter_message(text="Validate predefined slots")
-                return [{"email": None}, FollowupAction("email_form")]
-        except:
-            print("no email")
-            return {"email": None}
 
-    def validate_mobile_number(
-        self,
-        slot_value: Any,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: DomainDict,
-    ) -> Dict[Text, Any]:
+    #         """Validate email."""
+    #         try:
+    #             # Validate & take the normalized form of the email
+    #             # address for all logic beyond this point (especially
+    #             # before going to a database query where equality
+    #             # does not take into account normalization).
+    #             ve(email)
+    #             # dispatcher.utter_message(response="utter_email") # redundant because it is included in email_form_validation
+    #             return {"email": email}
 
-        """ "
-        check if a phone number was extracted
-        """
-        entities = tracker.latest_message["entities"]
-        for e in entities:
-            if e.get("entity") == "phone-number":
-                phone = e.get("value")
-                print(f"Phone was provided: {phone}")
+    #         except EmailNotValidError as e:
+    #             # email is not valid, exception message is human-readable
+    #             print(str(e))
+    #             dispatcher.utter_message(response="utter_no_email")
+    #             dispatcher.utter_message(text=str(e))
+    #             dispatcher.utter_message(text="Validate predefined slots")
+    #             return [{"email": None}, FollowupAction("email_form")]
+    #     except:
+    #         print("no email")
+    #         return {"email": None}
 
-                """Validate phone number."""
-                try:
-                    # Validate and format the phone number
-                    valid_phone, phone_num_formated = utils.validate_phone_number(phone)
-                    # dispatcher.utter_message(
-                    #    text=f"Phone: {phone_num_formated} is {valid_phone}"
-                    # )
-                    if valid_phone:
-                        dispatcher.utter_message(response="utter_mobile_number")
-                        [{"mobile_number": phone_num_formated}, FollowupAction("utter_mobile_number")]
-                        #return {"mobile_number": phone_num_formated}
-                    else:
-                        dispatcher.utter_message(
-                            text=f"Phone: {phone_num_formated} is not a valid number."
-                        )
-                        FollowupAction(
-                            name="mobile_number_form"
-                        )  #### Check if this works
-                        return {"mobile_number": None}
-                except:
-                    print("validation failed")
-                    dispatcher.utter_message(
-                        text=f"Unfortunately we could not validate this phone number: {phone}."
-                    )
-                    FollowupAction(name="mobile_number_form")
-                    return {"mobile_number": None}
+    # def validate_mobile_number(
+    #     self,
+    #     slot_value: Any,
+    #     dispatcher: CollectingDispatcher,
+    #     tracker: Tracker,
+    #     domain: DomainDict,
+    # ) -> Dict[Text, Any]:
 
-            else:
-                print("no phone number")
-                dispatcher.utter_message(
-                    text=f"Your last message did not contain a valid phone number."
-                )
-                FollowupAction(name="mobile_number_form")
-                return {"mobile_number": None}
+    #     """ "
+    #     check if a phone number was extracted
+    #     """
+    #     entities = tracker.latest_message["entities"]
+    #     for e in entities:
+    #         if e.get("entity") == "phone-number":
+    #             phone = e.get("value")
+    #             print(f"Phone was provided: {phone}")
+
+    #             """Validate phone number."""
+    #             try:
+    #                 # Validate and format the phone number
+    #                 valid_phone, phone_num_formated = utils.validate_phone_number(phone)
+    #                 # dispatcher.utter_message(
+    #                 #    text=f"Phone: {phone_num_formated} is {valid_phone}"
+    #                 # )
+    #                 if valid_phone:
+    #                     dispatcher.utter_message(response="utter_mobile_number")
+    #                     [{"mobile_number": phone_num_formated}, FollowupAction("utter_mobile_number")]
+    #                     #return {"mobile_number": phone_num_formated}
+    #                 else:
+    #                     dispatcher.utter_message(
+    #                         text=f"Phone: {phone_num_formated} is not a valid number."
+    #                     )
+    #                     FollowupAction(
+    #                         name="mobile_number_form"
+    #                     )  #### Check if this works
+    #                     return {"mobile_number": None}
+    #             except:
+    #                 print("validation failed")
+    #                 dispatcher.utter_message(
+    #                     text=f"Unfortunately we could not validate this phone number: {phone}."
+    #                 )
+    #                 FollowupAction(name="mobile_number_form")
+    #                 return {"mobile_number": None}
+
+    #         else:
+    #             print("no phone number")
+    #             dispatcher.utter_message(
+    #                 text=f"Your last message did not contain a valid phone number."
+    #             )
+    #             FollowupAction(name="mobile_number_form")
+    #             return {"mobile_number": None}
 
 
 
@@ -410,6 +380,7 @@ class ActionValidateEmail(Action):
         check if an email entity was extracted
         """
         email = None
+        print(f"action_validate_email is triggered")
         try:
             email = tracker.get_slot('email')
             print(f"Your email is {email}")
@@ -432,16 +403,70 @@ class ActionValidateEmail(Action):
         if email is not None:
             # validate the email
             try:
-                ve(email)
-                # print(email)
+                emailinfo = ve(email, check_deliverability=False)
+                  # After this point, use only the normalized form of the email address,
+                # especially before going to a database query.
+                email = emailinfo.normalized
+                print(f"normalized email {email}")
+                #ve(email)
+                return [SlotSet("email", email), FollowupAction("email_form")]
             except EmailNotValidError as e:
                 dispatcher.utter_message(response="utter_no_email")
                 dispatcher.utter_message(text=str(e))
                 # print(e)
                 email = None
+                return [SlotSet("email", email), FollowupAction("email_form")]
         else:
             dispatcher.utter_message(response="utter_no_email")
-        return [SlotSet("email", email)]
+            return [SlotSet("email", email)]
+
+class ActionValidateMobileNumber(Action):
+    def name(self) -> Text:
+        return "action_validate_mobile_number"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+
+        """
+        Validate phone number.
+        """
+        mobile_number = None
+        print(f"action_validate_mobile_number is triggered")
+        
+        try:
+            # Validate and format the phone number
+
+
+            mobile_number = tracker.get_slot('mobile_number')
+            print(f"Your mobile_number is {mobile_number}")
+            valid_phone, phone_num_formated = utils.validate_phone_number(phone)
+            # dispatcher.utter_message(
+            #    text=f"Phone: {phone_num_formated} is {valid_phone}"
+            # )
+            if valid_phone:
+                dispatcher.utter_message(response="utter_mobile_number")
+                return [SlotSet("mobile_number", mobile_number), FollowupAction("utter_mobile_number")]
+                #return {"mobile_number": phone_num_formated}
+            else:
+                print("validation failed")
+                dispatcher.utter_message(
+                    text=f"Phone: {phone_num_formated} is not a valid number."
+                )
+                return [SlotSet("mobile_number", None), FollowupAction(name="mobile_number_form")]
+        except:
+                #return [{"mobile_number": None}, FollowupAction(name="mobile_number_form")]
+
+
+            dispatcher.utter_message(
+                text=f"Unfortunately we could not validate your phone number" #: {mobile_number}."
+            )
+            
+            return [SlotSet("mobile_number", None), FollowupAction(name="mobile_number_form")]
+
 
 
 class ActionEmailOrSMS(Action):
@@ -646,7 +671,7 @@ class ActionResetCheckinDate(Action):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkin_date", None), SlotSet("num_nights", None)]
+        return [SlotSet("checkin_date", None), SlotSet("num_nights", None), FollowupAction("stay_form")]
 
 
 class ActionResetCheckoutDate(Action):
@@ -659,7 +684,7 @@ class ActionResetCheckoutDate(Action):
         tracker: Tracker,
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
-        return [SlotSet("checkout_date", None), SlotSet("num_nights", None)]
+        return [SlotSet("checkout_date", None), SlotSet("num_nights", None), FollowupAction("stay_form")]
 
 
 class ActionResetNumGuests(Action):
@@ -673,6 +698,31 @@ class ActionResetNumGuests(Action):
         domain: Dict[Text, Any],
     ) -> List[Dict[Text, Any]]:
         return [SlotSet("num_guests", None)]
+
+class ActionResetNumSingleRooms(Action):
+    def name(self) -> Text:
+        return "action_reset_num_single_rooms"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        return [SlotSet("num_single_rooms", None), ActiveLoop('room_type_form'), FollowupAction("room_type_form")]
+    
+
+class ActionResetNumDoubleRooms(Action):
+    def name(self) -> Text:
+        return "action_reset_num_double_rooms"
+
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        return [SlotSet("num_double_rooms", None), FollowupAction("room_type_form")]
 
 
 class ActionCheckRoom(Action):
@@ -711,11 +761,11 @@ class ActionCheckRoom(Action):
         else:
             # message = f"Single room rate: {room_proposal.get('single_room_rate')}"
             message = (
-                f"There is an availability issue {room_proposal['availability_issue']}"
+                f"There is an availability issue: {room_proposal['availability_issue']}"
             )
             dispatcher.utter_message(text=message)
-            dispatcher.utter_message(response = "utter_ask_change_dates")
-            return [SlotSet("room_proposal", False), FollowupAction("action_listen")]
+            #dispatcher.utter_message(response = "utter_change_stay_info")
+            return [SlotSet("room_proposal", False), FollowupAction("utter_change_stay_info")]
 
 
 class ActionNavigation(Action):
@@ -831,5 +881,5 @@ class ActionPROMO(Action):
                 SlotSet("checkout_date", get_date(checkout_date)),
                 SlotSet("num_single_rooms", 1),
                 SlotSet("num_double_rooms", 2),
-
+                FollowupAction("action_check_rooms")
                 ]

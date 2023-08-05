@@ -29,13 +29,21 @@ def send_email(receiver_email, subject, content):
     text = message.as_string()
 
     # Create SMTP session for sending the mail
-    session = smtplib.SMTP(SMTP_STRING, SMTP_PORT)
-    session.connect()
-    session.starttls()  # enable security
-    session.login(SENDER_ADDRESS, SENDER_EMAIL_PASSWORD)
-    session.sendmail(SENDER_ADDRESS, receiver_email, text)
-    session.quit()
-    print("Mail Sent")
+    try:
+        session = smtplib.SMTP(SMTP_STRING, SMTP_PORT)
+        session.connect()
+        print("connected")
+        session.starttls()  # enable security
+
+        print("started tls")
+        print("trying to login")
+        session.login(SENDER_ADDRESS, SENDER_EMAIL_PASSWORD)
+        print("Sending email")
+        session.sendmail(SENDER_ADDRESS, receiver_email, text)
+        session.quit()
+        print("Mail Sent")
+    except:
+        print("Email process failed")
     return
 
 
@@ -55,12 +63,12 @@ def validate_phone_number(phone_number):
 
 def request_room_availability(
     checkin_date, checkout_date, num_single_rooms, num_double_rooms
-):
+    ):
     """
     Mock-up of hotel room reservation system
     """
-    num_single_rooms_available = num_single_rooms + 1
-    num_double_rooms_available = num_double_rooms + 1
+    num_single_rooms_available = max(0, num_single_rooms + 1)   # change these values to simulate that the hotel has rooms available
+    num_double_rooms_available = max(0,num_double_rooms + 1)
     single_room_rate = 80
     double_room_rate = 140
     availability_ID = "007"
@@ -77,15 +85,15 @@ def request_room_availability(
 
     if num_single_rooms_available < num_single_rooms:
         room_proposal["num_single_rooms_available"] = num_single_rooms_available
-        room_proposal["availability_issue"] = "single_problem"
+        room_proposal["availability_issue"] = "We do not have any single rooms available for these dates."
 
         if num_double_rooms_available < num_double_rooms:
             room_proposal["num_double_rooms_available"] = num_double_rooms_available
-            room_proposal["availability_issue"] = "single_double_problem"
+            room_proposal["availability_issue"] = "Unfortunately, we do not have any rooms available for these dates."
     elif num_double_rooms_available < num_double_rooms:
 
         room_proposal["num_double_rooms_available"] = num_double_rooms_available
-        room_proposal["availability_issue"] = "double_problem"
+        room_proposal["availability_issue"] = "We do not have any double rooms available for these dates."
 
     else:
         room_proposal["availability_issue"] = None
