@@ -15,6 +15,7 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
+    - Hi
 - intent: goodbye
   examples: |
     - cu
@@ -127,6 +128,14 @@ nlu:
     - [2023-08-20](phone-number)
     - [2023-08-24](phone-number)
     - 0
+    - +41781234567
+- intent: out_of_scope
+  examples: |
+    - I want to order food
+    - What is 2 + 2?
+    - Who's the US President?
+    - What is the IU?
+    - Who is Donald Trump?
 - intent: inform_email
   examples: |
     - my email is [Elizabeth@yahoo.com](email)
@@ -154,6 +163,7 @@ nlu:
     - my email is [mrsx@gmail.com](email)
     - [mrx@mail.com](email)
     - [mr@gmail.com](email)
+    - [mrx@gmail.com](email)
 - intent: inform_mobile_number
   examples: |
     - My mobile number is [123456789](phone-number)
@@ -180,6 +190,7 @@ nlu:
     - I need a room on [2023-08-10](phone-number)
     - I need a room for [2023-08-12](phone-number)
     - I need a room tomorrow
+    - tomorrow
 - intent: ask_breakfast_price
   examples: |
     - Do you have complimentary breakfast?
@@ -335,6 +346,7 @@ nlu:
     - I'd like to get assistance from a person.
     - Connect me with a human assistant, please.
     - Can you put me through to a human support agent?
+    - I want to talk to a human
 - intent: PROMO
   examples: |
     - I have a promo code
@@ -342,3 +354,6 @@ nlu:
     - promotionD
     - special promo
     - promo
+- intent: nlu_fallback
+  examples: |
+    - Trump
