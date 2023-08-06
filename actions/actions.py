@@ -874,12 +874,17 @@ class ActionPROMO(Action):
         
 
         date_format = "%Y-%m-%d"
-        checkin_date = dt.strptime("2023-12-02", date_format)
-        checkout_date = dt.strptime("2023-12-02", date_format)
+        checkin_date = "2023-12-02"#dt.strptime("2023-12-02", "%Y-%m-%d")
+        #checkin_date = dt.strptime("2023-12-02", date_format)
+        checkout_date = "2023-12-12"#dt.strptime("2023-12-12", date_format)
 
-        return [SlotSet("checkin_date", get_date(checkin_date)),
-                SlotSet("checkout_date", get_date(checkout_date)),
+        SlotSet("checkin_date", checkin_date)# get_date(checkin_date))
+        SlotSet("checkout_date", checkout_date)#get_date(checkout_date))
+        SlotSet("num_single_rooms", "1")
+        SlotSet("num_double_rooms", "2")
+
+        return [SlotSet("checkin_date", checkin_date),
+                SlotSet("checkout_date", checkout_date),
                 SlotSet("num_single_rooms", 1),
                 SlotSet("num_double_rooms", 2),
-                FollowupAction("action_check_rooms")
-                ]
+                FollowupAction("action_check_rooms")]
