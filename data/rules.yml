@@ -33,17 +33,17 @@ rules:
   - action: utter_out_of_scope
     
 ### Fallback for low confidence - requires FallbackClassifier
-# - rule: Ask the user to rephrase whenever they send a message with low NLU confidence
-#   steps:
-#   - intent: nlu_fallback
-#   - action: utter_please_rephrase
-
-### 
-- rule: Implementation of the Two-Stage-Fallback
+- rule: Ask the user to rephrase whenever they send a message with low NLU confidence
   steps:
   - intent: nlu_fallback
-  - action: action_two_stage_fallback
-  - active_loop: action_two_stage_fallback
+  - action: utter_please_rephrase
+
+### 
+# - rule: Implementation of the Two-Stage-Fallback
+#   steps:
+#   - intent: nlu_fallback
+#   - action: action_two_stage_fallback
+#   - active_loop: action_two_stage_fallback
 
 ### Handover to human
 - rule: Connect the user to a human agent
@@ -121,15 +121,11 @@ rules:
   - active_loop: null
   - action: utter_name_values
   - action: utter_ask_contact_channel
-  #wait_for_user_input: false 
-
+ 
 
 ### Mobile number form
 - rule: Activate mobile_number_form
   steps:
-  # - intent: inform
-  #   entities: 
-  #   - phone
   - action: utter_ask_mobile_number
   - action: mobile_number_form
   - active_loop: mobile_number_form
@@ -143,14 +139,12 @@ rules:
     - requested_slot: null
   - active_loop: null
   wait_for_user_input: false
-  #- action: utter_mobile_number
 
 - rule: get phone number
   steps:
   - intent: inform_mobile_number
   - action: mobile_number_form
   - active_loop: mobile_number_form
-#  - active_loop: null
 
 - rule: use mobile phone as contact channel
   steps:
@@ -159,16 +153,12 @@ rules:
   - action: mobile_number_form  
   - active_loop: mobile_number_form
     
-
-    
-
-
 - rule: get phone number
   steps:
   - intent: confirmation_by_sms
   - action: mobile_number_form
   - active_loop: mobile_number_form
-#  - active_loop: null
+
 
 ### Stay form
 - rule: Activate stay_form
@@ -176,14 +166,13 @@ rules:
   - intent: ask_availability
   - action: stay_form
   - active_loop: stay_form
-  # follow-up action defined here
+
   
 - rule: Submit stay_form
   condition: 
   - active_loop: stay_form
   steps:
   - action: stay_form
-
   - slot_was_set: 
     - requested_slot: null
   - active_loop: null
@@ -192,13 +181,12 @@ rules:
   - action: room_type_form
   wait_for_user_input: false  
 
+
 ### Room type form
 - rule: Activate room_type_form
   steps:
-  #- intent: inform_room_type
   - action: room_type_form
   - active_loop: room_type_form
-    
 
 - rule: Submit room_type_form
   condition: 
@@ -212,8 +200,9 @@ rules:
   - active_loop: null
   - action: utter_num_room_types
   - action: utter_ask_check_availability  
-    
 
+
+### Booking process rules   
 - rule: Check for room availability when user confirms the room types
   steps:
   - action: utter_ask_check_availability
@@ -221,54 +210,12 @@ rules:
   - action: action_check_rooms
   wait_for_user_input: false  
 
+
 - rule: Deny proceed with booking
   steps: 
   - action: utter_ask_proceed_booking
   - intent: deny
   - action: utter_change_stay_info
-
-  #wait_for_user_input: false
-
-# - rule: Only proceed with available rooms
-#   condition:
-#   - slot_was_set:
-#     - room_proposal: true
-#   steps: 
-#   - action: action_check_rooms
-#   - action: utter_ask_proceed_booking
-    
-
-# - rule: No rooms available
-#   condition:
-#   - slot_was_set:
-#     - room_proposal: false
-#   steps: 
-#   - action: action_check_rooms
-#   - action: utter_rooms_unavailable
-#   - action: utter_ask_change_dates
-  
-# - rule: Only proceed with available rooms
-
-#   condition:
-#   - slot_was_set:
-#     - room_proposal: true
-  
-#     steps: 
-
-#     - action: action_check_rooms
-#     - action: utter_ask_proceed_booking
-#     - intent: affirm
-#     - action: action_email_or_sms
-  
-# - rule: Only proceed with available rooms
-#   condition:
-#   - slot_was_set:
-#     - room_proposal: true
-#     steps: 
-#     - action: action_check_rooms
-#     - action: utter_ask_proceed_booking
-#     - intent: affirm
-#     - action: action_email_or_sms
 
 
 - rule: No rooms available
@@ -287,12 +234,14 @@ rules:
   - action: stay_form
   - active_loop: stay_form
 
+
 - rule: Change checkout date
   steps:
   - intent: change_checkout_date
   - action: action_reset_checkout_date
   - action: stay_form
   - active_loop: stay_form
+
 
 - rule: Change number of single rooms
   steps:
@@ -302,9 +251,9 @@ rules:
   - slot_was_set:
     - num_single_rooms: null
   - action: room_type_form
-
   - action: room_type_form
   - active_loop: room_type_form
+
 
 - rule: Change number of double rooms
   steps:
@@ -321,11 +270,13 @@ rules:
   - action: stay_form
   - active_loop: stay_form
 
+
 - rule: Answer breakfast price
   steps:
   - intent: ask_breakfast_price
   - action: utter_breakfast_price
   wait_for_user_input: false
+
 
 - rule: Deny availability 
   steps:  
@@ -340,30 +291,23 @@ rules:
   - slot_was_set:
     - room_proposal: true
   - action: utter_ask_proceed_booking
-  #- action: action_listen
   - intent: affirm
   - action: utter_need_guest_info_for_booking
   - action: name_form
   - active_loop: name_form
   - active_loop: null
-
   - action: utter_name_values
-  # - action: utter_ask_confirmation_by_email_or_SMS
-  #- action: action_ask_contact_channel
   - action: utter_ask_contact_channel
     
+
 - rule: set contact_channel
   steps:
   - action: action_ask_contact_channel
   - action: action_set_contact_channel
-# - rule: start booking process
-#   steps:
-#   - slot_was_set:
-#     - proceed_with_booking: true
-  
 
 
-- rule: use PROMO for testing
+### Rules for quickly filling slots - important for testing branching in later parts of the conversation
+- rule: use PROMO for testing by prefilling stay data
   steps:
   - intent: PROMO
   - action: action_PROMO
