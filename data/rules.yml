@@ -1,10 +1,24 @@
 version: "3.1"
 
 rules:
+  
+- rule: welcome user
+  conversation_start: true  # this rule only applies at the beginning of a conversation
+  steps:
+    - intent: greet
+    - action: utter_introduction_ebutler
+    - action: utter_how_can_I_help
+
+# - rule: Start conversation  # conflicting with welcome user
+#   steps:
+#     - intent: start_conversation
+#     - action: utter_introduction_ebutler
+
 - rule: Say goodbye anytime the user says goodbye
   steps:
   - intent: goodbye
   - action: utter_goodbye
+
 
 - rule: Say 'I am a bot' anytime the user challenges
   steps:
@@ -12,17 +26,6 @@ rules:
   - action: utter_iamabot
   - action: action_send_email_confirmation
     
-# - rule: Start conversation  # conflicting with welcome user
-#   steps:
-#     - intent: start_conversation
-#     - action: utter_introduction_ebutler
-
-- rule: welcome user
-  conversation_start: true  # this rule only applies at the beginning of a conversation
-  steps:
-    - intent: greet
-    - action: utter_introduction_ebutler
-    - action: utter_how_can_I_help
 
 - rule: out-of-scope
   steps:
@@ -48,7 +51,15 @@ rules:
   - intent: handover_to_human
   - action: utter_handover_to_human
   wait_for_user_input: false
-    
+
+ ### Breaking out of dialog flow   
+- rule: Force-break form if the user stops the bot
+  steps:
+  - intent: stop
+  - action: action_deactivate_loop
+  - active_loop: null
+  - action: action_back_to_greet
+  - action: utter_greet
 
 - rule: ask room price
   steps: 
@@ -56,12 +67,11 @@ rules:
   - action: utter_standard_room_prices
   - action: utter_special_room_prices
 
+
 ### Email form
 - rule: Utter the email when provided by the user
   steps:
   - intent: inform_email
-  # - action: action_validate_email
-  # - action: action_ask_contact_channel
   - action: email_form
   - active_loop: email_form
   
@@ -87,6 +97,14 @@ rules:
     - requested_slot: null
   wait_for_user_input: false
 
+- rule: use email as contact channel
+  steps:
+  - action: utter_ask_contact_channel
+  - intent: use_email
+  - action: email_form
+  - active_loop: email_form
+
+
 ### Name form
 - rule: Activate name_form
   steps:
@@ -104,6 +122,7 @@ rules:
   - action: utter_name_values
   - action: utter_ask_contact_channel
   #wait_for_user_input: false 
+
 
 ### Mobile number form
 - rule: Activate mobile_number_form
@@ -132,7 +151,18 @@ rules:
   - action: mobile_number_form
   - active_loop: mobile_number_form
 #  - active_loop: null
-  
+
+- rule: use mobile phone as contact channel
+  steps:
+  - action: utter_ask_contact_channel
+  - intent: inform_mobile_number
+  - action: mobile_number_form  
+  - active_loop: mobile_number_form
+    
+
+    
+
+
 - rule: get phone number
   steps:
   - intent: confirmation_by_sms

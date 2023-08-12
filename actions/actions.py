@@ -23,6 +23,7 @@ from rasa_sdk.events import (
     EventType,
     FollowupAction,
     ActiveLoop
+    
 )
 
 from datetime import datetime as dt
@@ -35,7 +36,7 @@ import importlib
 from sqlalchemy import except_
 import actions.utils as utils
 
-# imp.reload(utils)
+# Fast reloading of utils funcitons
 importlib.reload(utils)
 
 # Helper functions
@@ -70,7 +71,6 @@ class ActionDefaultFallback(Action):
 
 
 # Form validations
-
 class ValidateStayForm(FormValidationAction):
     def name(self) -> Text:
         return "validate_stay_form"
@@ -176,24 +176,12 @@ class ValidateEmailForm(FormValidationAction):
         tracker: Tracker,
         domain: DomainDict,
     ) -> Dict[Text, Any]:
-        """ "
-        check if an email entity was extracted
-        """
+        """Validate email format"""
+        
         print("validate_email_form triggered")
         email = None
         try:
             email = tracker.get_slot('email')
-            #entities = tracker.latest_message["entities"]
-            # #dispatcher.utter_message(text=str(entities))  # only for debugging purposes
-
-            # # get the value from the 'email' entity if it has been provided
-            # for e in entities:
-            #     if e.get("entity") == "email":
-            #         email = e.get("value")
-            #         # print(f"Email was provided: {email}")
-            #     else:
-            #         # print("NO Email was provided")
-            #         dispatcher.utter_message(response="utter_no_email")
             print(f"Your email is {email}")
         except:
             email = None
@@ -207,15 +195,11 @@ class ValidateEmailForm(FormValidationAction):
                 # Check that the email address is valid. Turn on check_deliverability
                 # for first-time validations like on account creation pages (but not
                 # login pages).
-
-
                 emailinfo = ve(email, check_deliverability=False)
-                #validate_email(email)
-                  # After this point, use only the normalized form of the email address,
+                # After this point, use only the normalized form of the email address,
                 # especially before going to a database query.
                 email = emailinfo.normalized
                 print(f"normalized email {email}")
-                #return [SlotSet("email", email)] # not allowed for form actions
                 return {"email": email}
             except EmailNotValidError as e:
                 # The exception message is human-readable explanation of why it's
@@ -224,7 +208,6 @@ class ValidateEmailForm(FormValidationAction):
                 print(str(e))
                 dispatcher.utter_message(response="utter_no_email")
                 dispatcher.utter_message(text=str(e))
-                #print(e)
                 email = None
                 return {"email": email}
         else:
@@ -241,12 +224,10 @@ class ValidatePredefinedSlots(ValidationAction):
         domain: DomainDict,
     ) -> Dict[Text, Any]:
         """Validate checkin_date_dummy."""
+
         # DucklingEntityExtractor returns a dict when it extracts a date range
         if isinstance(slot_value, dict):
             print(f"Is dict: {slot_value}")
-            # tracker.set_slot("checkout_date", get_date(slot_value.get("to")))  ### FIX: 'Tracker' object has no attribute 'set_slot'
-            # SlotSet("checkout_date", get_date(slot_value.get("to")))  ### FIX: This crashes
-            # key = frozenset(slot_value.items())
             checkin_date = slot_value.get("from")
             try:
                 checkout_date = slot_value.get("to")
@@ -258,17 +239,11 @@ class ValidatePredefinedSlots(ValidationAction):
             SlotSet("checkout_date", checkout_date)
             FollowupAction("action_set_checkout_date")
             print("Set slots")
-            # FollowupAction(name="stay_form") # not necessary due to detected intent
-            # SlotSet("checkout_date", get_date(slot_value.get("to")))
-            # return {SlotSet("checkin_date", get_date(slot_value.get("from")))}
-            # return {SlotSet("checkin_date", checkin_date)}
             return {"checkin_date": get_date(checkin_date)}
 
         else:
             # DucklingEntityExtractor returns a string for a single date/time
             print("Checkin date is no dict")
-            # SlotSet("checkin_date", get_date(slot_value))
-            # FollowupAction(name="stay_form") # not necessary due to detected intent
             return {"checkin_date": get_date(slot_value)}
 
     # def validate_email(
@@ -856,10 +831,33 @@ class ActionSendEmailConfirmation(Action):
 
 
 
-###########################
+class ActionBackToGreet(Action):
+    def name(self) -> Text:
+        return "action_back_to_greet"
 
+    def run(
+        self,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any],
+    ) -> List[Dict[Text, Any]]:
+        
+        # Customize what the bot should forget by uncommenting the following lines
+        SlotSet("checkin_date", None)
+        SlotSet("checkout_date", None)
+        SlotSet("num_single_rooms", None)
+        SlotSet("num_double_rooms", None)
+        SlotSet("num_nights", None)
+        SlotSet("room_proposal", None)
+        SlotSet("proceed_with_booking", None)
+        SlotSet("inlcude_breakfast", None)
+        SlotSet("contact_channel", None)
+        SlotSet("first_name", None)
+        SlotSet("last_name", None)
+        SlotSet("email", None)
+        SlotSet("mobile_number", None)
 
-
+        return [FollowupAction(UserUtteranceReverted())]
 
 class ActionPROMO(Action):
     def name(self) -> Text:
@@ -873,18 +871,20 @@ class ActionPROMO(Action):
     ) -> List[Dict[Text, Any]]:
         
 
-        date_format = "%Y-%m-%d"
-        checkin_date = "2023-12-02"#dt.strptime("2023-12-02", "%Y-%m-%d")
-        #checkin_date = dt.strptime("2023-12-02", date_format)
-        checkout_date = "2023-12-12"#dt.strptime("2023-12-12", date_format)
+        #date_format = "%Y-%m-%d"
 
-        SlotSet("checkin_date", checkin_date)# get_date(checkin_date))
-        SlotSet("checkout_date", checkout_date)#get_date(checkout_date))
+        # Define the check-in and check-out dates for the promotional booking
+        checkin_date = "2023-12-26"
+        checkout_date = "2023-12-24"
+
+        SlotSet("checkin_date", checkin_date)
+        SlotSet("checkout_date", checkout_date)
         SlotSet("num_single_rooms", "1")
         SlotSet("num_double_rooms", "2")
 
         return [SlotSet("checkin_date", checkin_date),
                 SlotSet("checkout_date", checkout_date),
                 SlotSet("num_single_rooms", 1),
-                SlotSet("num_double_rooms", 2),
-                FollowupAction("action_check_rooms")]
+                SlotSet("num_double_rooms", 1),
+                SlotSet("room_proposal", True),
+                FollowupAction("utter_ask_proceed_booking")]

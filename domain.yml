@@ -29,38 +29,47 @@ intents:
 - inform_mobile_number
 - inform_room_type
 - name_form
+- nlu_fallback
+- out_of_scope
 - provide_names
 - start_conversation
 - stop
 - use_email
 actions:
-- utter_stay_form
-- utter_ask_proceed_booking
 - utter_goodbye
+- utter_handover_to_human
+- utter_ask_proceed_booking
+- utter_name_values
+- utter_mobile_number
+- utter_anything_else
+- action_check_rooms
+- utter_need_guest_info_for_booking
+- utter_confirmation_sms
+- utter_out_of_scope
+- action_PROMO
 - utter_ask_contact_channel
+- utter_special_room_prices
+- utter_stay_form
+- utter_num_room_types
+- utter_standard_room_prices
+- utter_introduction_ebutler
+- action_calculate_num_nights
+- utter_ask_check_availability
+- utter_how_can_I_help
 - utter_confirmation_by_email
 - action_send_email_confirmation
-- utter_anything_else
-- utter_name_values
-- utter_num_room_types
 - utter_change_stay_info
-- utter_need_guest_info_for_booking
 - action_reset_num_single_rooms
-- action_calculate_num_nights
-- action_check_rooms
-- utter_ask_check_availability
 - action_reset_num_double_rooms
-- action_PROMO
-- utter_handover_to_human
 - utter_email
 - action_reset_checkout_date
 - action_reset_checkin_date
 - utter_booking_information_complete
-- utter_confirmation_sms
 - utter_ask_last_name
 - action_ask_contact_channel
 - action_set_contact_channel
 - utter_address
+- action_back_to_greet
 - action_continue
 - action_custom_fallback
 - action_reset_num_guests
@@ -68,7 +77,7 @@ actions:
 - action_add_breakfast
 - action_validate_email
 - action_validate_slot_mappings
-- utter_introduction_ebutler
+- action_deactivate_loops
 - validate_checkin_date
 - validate_email_form
 - validate_stay_form
@@ -80,11 +89,11 @@ entities:
 - num_guests
 - time
 - number
-- room_type:
-    roles:
-    - single_room
-    - double_room
-    - unspecified
+# - room_type:
+#     roles:
+#     - single_room
+#     - double_room
+#     - unspecified
 - amount
 - contact_channel
 responses:
@@ -113,6 +122,8 @@ responses:
   - text: Goodbye.
   utter_iamabot:
   - text: I am a bot, powered by Rasa.
+  utter_out_of_scope:
+  - text: Sorry, I can't handle that request.
   utter_ask_first_name:
   - text: What is your first name?
   utter_ask_last_name:
