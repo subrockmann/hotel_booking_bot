@@ -1,0 +1,16 @@
+name: rasa
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - black
+  - jupyter
+  - python-dotenv
+  - pip
+  - pip:
+      - rasa
+      - flask
+      - email-validator
+      - phonenumbers
+

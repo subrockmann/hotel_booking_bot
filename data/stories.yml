@@ -10,8 +10,6 @@ stories:
   - action: action_listen
 
 
-
-
 - story: ask room prices for specific date
   steps:
   - action: utter_special_room_prices
@@ -20,24 +18,9 @@ stories:
   - active_loop: stay_form
   
 
-
 - story: Provide personal details with phone number request
   steps:
-  # - intent: greet
-  # - action: utter_greet
-  # - intent: name_form
-  # - action: name_form
-  # - active_loop: name_form
-  # - action: utter_ask_first_name
-  # - active_loop: name_form
-  # - action: utter_ask_last_name
-  # - active_loop: name_form
-  # - action: name_form
-  # - active_loop: null
   - action: utter_name_values
-  #- action: utter_ask_confirmation_by_email_or_SMS
-  # - action: action_ask_contact_channel
-  # - action: action_set_contact_channel
   - action: utter_ask_contact_channel
   - intent: confirmation_by_sms
   - action: mobile_number_form
@@ -47,27 +30,11 @@ stories:
   - action: mobile_number_form
   - active_loop: null
   - action: utter_mobile_number
-  # - intent: goodbye
-  # - action: utter_goodbye
 
 
 - story: Provide personal details with email
   steps:
-  # - intent: greet
-  # - action: utter_greet
-  # - intent: name_form
-  # - action: name_form
-  # - active_loop: name_form
-  # - action: utter_ask_first_name
-  # - active_loop: name_form
-  # - action: utter_ask_last_name
-  # - active_loop: name_form
-  # - action: name_form
-  # - active_loop: null
   - action: utter_name_values
-  #- action: utter_ask_confirmation_by_email_or_SMS
-  # - action: action_ask_contact_channel
-  # - action: action_set_contact_channel
   - action: utter_ask_contact_channel
   - intent: use_email
   - action: email_form
@@ -76,19 +43,19 @@ stories:
   - action: utter_confirmation_by_email
   - action: utter_anything_else
     
+
 - story: Send the confirmation by email
   steps:
   - action: utter_confirmation_by_email
   - action: utter_anything_else
 
+
 - story: Send the confirmation by SMS
   steps:
-  # - action: utter_ask_contact_channel
-  # - intent: inform_mobile_number
-  # - action: mobile_number_form
   - action: utter_mobile_number
   - action: utter_confirmation_sms
   - action: utter_anything_else
+
 
 - story: Booking a room happy path
   steps:
@@ -100,34 +67,27 @@ stories:
   - slot_was_set: 
     - requested_slot: null
   - action: action_calculate_num_nights 
-  - action: utter_stay_form
-  #- intent: inform_room_type
+  - action: utter_stay_forme
   - action: room_type_form
   - active_loop: room_type_form
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
   - action: utter_num_room_types
-  #- action: action_check_rooms 
   - action: utter_ask_check_availability  
   - intent: affirm
   - action: action_check_rooms 
   - action: utter_ask_proceed_booking
-  # - action: action_listen
-  # - intent: affirm  
-  # - action: utter_need_guest_info_for_booking
+
 
 - story: Check availability of rooms
   steps:
   - action: utter_num_room_types
-  #- action: action_check_rooms 
   - action: utter_ask_check_availability  
   - intent: affirm
   - action: action_check_rooms 
   - action: utter_ask_proceed_booking
-  # - action: action_listen
-  # - intent: affirm  
-  # - action: utter_need_guest_info_for_booking
+
 
 # Breakfast Stories
 - story: Add breakfast happy path
@@ -137,7 +97,7 @@ stories:
   - action: utter_ask_add_breakfast
   - intent: affirm
   - action: utter_confirmation_add_breakfast
-  #- action: action_add_breakfast
+
 
 - story: Add breakfast unhappy path
   steps:
@@ -146,7 +106,7 @@ stories:
   - action: utter_ask_add_breakfast
   - intent: deny
   - action: utter_add_breakfast_onsite
-  # - action: do not need breakfast but set slot to false
+
 
 ### Cancellation policy
 - story: Utter cancellation policy when requested by the user
@@ -155,33 +115,38 @@ stories:
   - action: utter_cancellation_policy 
   - action: utter_anything_else
 
+
 ### Hotel address
 - story: Utter the hotel adress when asked by the user
   steps:
   - intent: ask_address
   - action: utter_address
   - action: utter_anything_else
-    
+
+
 ### Airport shuttle    
 - story: Answer airport shuttle
   steps:
   - intent: ask_airport_shuttle
   - action: utter_airport_shuttle
   - action: utter_anything_else
-    
+
+
 ### Check-in and check-out times
 - story: Utter check-in and check-out times when requested by the user
   steps:
   - intent: ask_checkin_checkout_times
   - action: utter_check-in_check-out_policy
   - action: utter_anything_else
-    
+
+
 ### Car parking  
 - story: Answer questions about parking
   steps:
   - intent: ask_parking
   - action: utter_parking
   - action: utter_anything_else
+
 
 ### Pet policy
 - story: Utter pet policy when user asks anything about pets
@@ -196,16 +161,12 @@ stories:
   steps:
   - intent: handover_to_human
   - action: utter_handover_to_human
-#  - action: action_handover # needs to be implmented
   - action: utter_goodbye
+
 
 # Providing Names
 - story: User provides name
   steps:
-  # - intent: greet
-  # - action: utter_greet
-  # - intent: provide_names
-  # #- intent: name_form
   - action: name_form
   - active_loop: name_form
   - action: utter_ask_first_name
@@ -214,26 +175,15 @@ stories:
   - active_loop: name_form
   - action: name_form
   - active_loop: null
-  #- action: utter_submit_name
   - action: utter_name_values
   - action: utter_ask_contact_channel
- # - action: action_ask_contact_channel
-  # - intent: goodbye
-  # - action: utter_goodbye
 
 
-# Anything else?
 - story: anything else to help - happy path
   steps:
   - action: utter_anything_else
   - intent: deny
   - action: utter_I_am_happy_to_help
-
-
-# - story: happy path
-#   steps:
-#   - intent: greet
-#   - action: utter_greet
 
 
 - story: confirm by email
@@ -244,18 +194,10 @@ stories:
   - slot_was_set:
     - contact_channel: "email"  
   - action: utter_confirmation_by_email
-
-
   
 
 - story: send confirmation by email
   steps:
-  #- intent: use_email
-  #- action: email_form
-  # - active_loop: email_form
-  # - slot_was_set:
-  #   - requested_slot: null
-  # - active_loop: null
   - action: utter_email
   - action: utter_booking_information_complete
   - action: utter_confirmation_by_email
@@ -271,39 +213,172 @@ stories:
   - action: mobile_number_form
   - active_loop: mobile_number_form
 
-
     
 - story: Check availability of rooms
   steps:
-  # - action: utter_num_room_types
-  # #- action: action_check_rooms 
   - action: utter_ask_check_availability  
   - intent: affirm
   - action: action_check_rooms 
-  - action: utter_ask_proceed_booking
-  # - action: action_listen
-  # - intent: affirm  
-  # - action: utter_need_guest_info_for_booking
-  # - action: name_form
-  # - active_loop: name_form
-    
-# - story: Unhappy path for checking room availability
-#   steps:
-#   - action: utter_num_room_types
-#   - action: utter_ask_check_availability
-#   - intent: deny
-#   - action: utter_change_stay_info
-#   - intent: change_checkin_date
-#   #### we need ideas how to proceed here!!!!  
+  - action: utter_ask_proceed_booking 
 
     
 - story: Collect guest information SMS
   steps:
   - action: utter_name_values
-  # - action: utter_ask_confirmation_by_email_or_SMS
   - action: utter_ask_contact_channel
-  # - action: action_ask_contact_channel
-  # - action: action_set_contact_channel
+
+
+
+
+- story: Check avialability unhappy path -> not enough single rooms -> change number of single rooms
+  steps:
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability
+  - intent: affirm
+  - action: action_check_rooms
+  - slot_was_set:
+    - room_proposal: false
+  - action: utter_change_stay_info
+  - intent: change_num_single_rooms
+  - action: action_reset_num_single_rooms
+  - slot_was_set:
+    - num_single_rooms: null
+  - action: room_type_form
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability
+
+
+- story: Check avialability unhappy path -> not enough double rooms -> change number of double rooms
+  steps:
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability
+  - intent: affirm
+  - action: action_check_rooms
+  - slot_was_set:
+    - room_proposal: false
+  - action: utter_change_stay_info
+  - intent: change_num_double_rooms
+  - action: action_reset_num_double_rooms
+  - action: room_type_form
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability
+    
+
+- story: Utter confirmation email
+  steps:
+  - active_loop: email_form
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_send_email_confirmation
+  - action: utter_confirmation_by_email
+  - action: utter_anything_else
+  - intent: deny
+  - action: utter_goodbye
+    
+
+- story: change number of single rooms
+  steps:
+  - action: utter_change_stay_info
+  - intent: change_num_single_rooms
+  - action: action_reset_num_single_rooms
+  - slot_was_set:
+    - num_single_rooms: null
+  - action: room_type_form
+  - active_loop: room_type_form
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability  
+
+ 
+- story: Deny_availability_check_and_change_check-in_date
+  steps:  
+  - action: utter_ask_check_availability
+  - intent: deny
+  - action: utter_change_stay_info
+  - intent: change_checkin_date
+  - action: action_reset_checkin_date
+  - action: stay_form
+  - active_loop: stay_form
+    
+
+- story: Deny availability check and change check-out date
+  steps:  
+  - action: utter_ask_check_availability
+  - intent: deny
+  - action: utter_change_stay_info
+  - intent: change_checkout_date
+  - action: action_reset_checkout_date
+  - action: stay_form
+  - active_loop: stay_form
+    
+
+- story: Check availability unhappy path & change check-in date
+  steps:
+  - action: action_check_rooms
+  - slot_was_set:
+    - room_proposal: false
+  - action: utter_rooms_unavailable
+  - action: utter_change_stay_info
+  - intent: change_checkin_date
+  - action: action_reset_checkin_date
+  - action: stay_form
+  - action: action_calculate_num_nights
+  - action: utter_stay_form
+  - action: room_type_form
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability  
+
+
+- story: Check availability unhappy path & change check-out date
+  steps:
+  - action: action_check_rooms
+  - slot_was_set:
+    - room_proposal: false
+  - action: utter_rooms_unavailable
+  - action: utter_change_stay_info
+  - intent: change_checkout_date
+  - action: action_reset_checkout_date
+  - action: stay_form
+  - action: action_calculate_num_nights
+  - action: utter_stay_form
+  - action: room_type_form
+  - action: utter_num_room_types
+  - action: utter_ask_check_availability  
+    
+
+- story: Deny proceed with booking
+  steps: 
+  - action: utter_ask_proceed_booking
+  - intent: deny
+  - action: utter_change_stay_info
+  - intent: deny
+  - action: utter_anything_else 
+
+
+- story: Choose SMS for booking confirmation
+  steps:
+  - action: utter_name_values
+  - action: utter_ask_contact_channel
+  - intent: inform_mobile_number
+  - action: mobile_number_form
+  - active_loop: mobile_number_form
+  - slot_was_set:
+    - requested_slot: mobile_number
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: utter_mobile_number
+  - action: utter_confirmation_sms
+  - action: utter_anything_else
     
 
 ### Interactive stories
@@ -322,7 +397,6 @@ stories:
   - action: utter_stay_form
   - action: room_type_form
   - active_loop: room_type_form
-
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
@@ -333,7 +407,6 @@ stories:
   - slot_was_set:
     - room_proposal: true
   - action: utter_ask_proceed_booking
-  # - action: action_listen
   - intent: affirm
   - action: utter_need_guest_info_for_booking
   - action: name_form
@@ -358,28 +431,6 @@ stories:
   - action: utter_ask_proceed_booking
     
 
-
-
-  # - action: action_listen
-  # - intent: affirm  
-  # - action: utter_need_guest_info_for_booking
-  # - action: name_form
-  # - active_loop: name_form
-
-# - story: interactive_story_3
-#   steps:
-
-#   - action: utter_num_room_types
-#   - action: utter_ask_check_availability
-#   - intent: affirm
-#   - action: action_check_rooms
-#   - slot_was_set:
-#     - room_proposal: true
-#   - action: utter_ask_proceed_booking
-#   - action: action_listen
-#   - intent: affirm
-#   - action: name_form
-#   - active_loop: name_form
 - story: interactive_story_3
   steps:
   - intent: ask_availability
@@ -465,6 +516,7 @@ stories:
   - active_loop: null
   - action: utter_name_values
   - action: utter_ask_contact_channel
+
 
 - story: interactive_story_4
   steps:
@@ -572,6 +624,7 @@ stories:
   - intent: deny
   - action: utter_goodbye
 
+
 - story: interactive_story_5
   steps:
   - action: utter_anything_else
@@ -590,6 +643,7 @@ stories:
   - active_loop: null
   - action: utter_email
   - action: utter_anything_else
+
 
 - story: interactive_story_6
   steps:
@@ -675,78 +729,8 @@ stories:
   - active_loop: room_type_form
 
 
-- story: change number of single rooms
-  steps:
-  - action: utter_change_stay_info
-  - intent: change_num_single_rooms
-  - action: action_reset_num_single_rooms
-  - slot_was_set:
-    - num_single_rooms: null
-  - action: room_type_form
-  - active_loop: room_type_form
-  - slot_was_set:
-    - requested_slot: null
-  - active_loop: null
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability  
-    
-- story: Deny_availability_check_and_change_check-in_date
-  steps:  
-  - action: utter_ask_check_availability
-  - intent: deny
-  - action: utter_change_stay_info
-  - intent: change_checkin_date
-  - action: action_reset_checkin_date
-  - action: stay_form
-  - active_loop: stay_form
-    
 
-- story: Deny availability check and change check-out date
-  steps:  
-  - action: utter_ask_check_availability
-  - intent: deny
-  - action: utter_change_stay_info
-  - intent: change_checkout_date
-  - action: action_reset_checkout_date
-  - action: stay_form
-  - active_loop: stay_form
-    
-
-- story: Check availability unhappy path & change check-in date
-  steps:
-  - action: action_check_rooms
-  - slot_was_set:
-    - room_proposal: false
-  - action: utter_rooms_unavailable
-  - action: utter_change_stay_info
-  - intent: change_checkin_date
-  - action: action_reset_checkin_date
-  - action: stay_form
-  #- active_loop: stay_form
-  - action: action_calculate_num_nights
-  - action: utter_stay_form
-  - action: room_type_form
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability  
-
-
-- story: Check availability unhappy path & change check-out date
-  steps:
-  - action: action_check_rooms
-  - slot_was_set:
-    - room_proposal: false
-  - action: utter_rooms_unavailable
-  - action: utter_change_stay_info
-  - intent: change_checkout_date
-  - action: action_reset_checkout_date
-  - action: stay_form
-  - action: action_calculate_num_nights
-  - action: utter_stay_form
-  - action: room_type_form
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability  
-    
-- story: interactive_story_8
+- story: interactive_story_7
   steps:
   - intent: ask_availability
     entities:
@@ -894,52 +878,14 @@ stories:
   - action: utter_need_guest_info_for_booking
   - action: name_form
   - active_loop: name_form
-  # - slot_was_set:
-  #   - requested_slot: first_name
-  # - intent: provide_names
-  # - slot_was_set:
-  #   - first_name: Mickey
-  # - action: name_form
-  # - slot_was_set:
-  #   - requested_slot: last_name
-  # - intent: greet
-  # - slot_was_set:
-  #   - last_name: Mouse
-  # - intent: i
-  # - intent: greet
-  # - slot_was_set:
-  #   - last_name: Mouseman
-  # - intent: inform
-
-- story: Deny proceed with booking
-  steps: 
-  - action: utter_ask_proceed_booking
-  - intent: deny
-  - action: utter_change_stay_info
-  - intent: deny
-  - action: utter_anything_else 
 
 
-# - story: interactive_story_9
-#   steps:
-#   - action: utter_need_guest_info_for_booking
-#   - action: name_form
-#   - active_loop: name_form
-#   - slot_was_set:
-#     - requested_slot: first_name
-#   - intent: greet
-#   - slot_was_set:
-#     - first_name: Mickey
-
-
-- story: interactive_story_10
+- story: interactive_story_8
   steps:
   - action: utter_ask_contact_channel
   - intent: use_email
   - action: email_form
   - active_loop: email_form
-  - slot_was_set:
-    - requested_slot: email
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
@@ -952,7 +898,7 @@ stories:
   - action: action_listen
 
 
-- story: interactive_story_1
+- story: interactive_story_9
   steps:
   - action: utter_num_room_types
   - action: utter_ask_check_availability
@@ -968,152 +914,7 @@ stories:
   - action: action_default_fallback
 
 
-- story: Check avialability unhappy path -> not enough single rooms -> change number of single rooms
-  steps:
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability
-  - intent: affirm
-  - action: action_check_rooms
-  - slot_was_set:
-    - room_proposal: false
-  - action: utter_change_stay_info
-  - intent: change_num_single_rooms
-  - action: action_reset_num_single_rooms
-  - slot_was_set:
-    - num_single_rooms: null
-  - action: room_type_form
-  - slot_was_set:
-    - requested_slot: null
-  - active_loop: null
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability
-
-
-- story: Check avialability unhappy path -> not enough double rooms -> change number of double rooms
-  steps:
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability
-  - intent: affirm
-  - action: action_check_rooms
-  - slot_was_set:
-    - room_proposal: false
-  - action: utter_change_stay_info
-  - intent: change_num_double_rooms
-  - action: action_reset_num_double_rooms
-  - action: room_type_form
-  - slot_was_set:
-    - requested_slot: null
-  - active_loop: null
-  - action: utter_num_room_types
-  - action: utter_ask_check_availability
-    
-
-# - story: interactive_story_1
-#   steps:
-#   - intent: ask_availability
-#     entities:
-#     - time: '2023-08-06T00:00:00.000-07:00'
-#   - slot_was_set:
-#     - checkin_date_dummy: '2023-08-06T00:00:00.000-07:00'
-#   - slot_was_set:
-#     - checkin_date: '2023-08-06'
-#   - action: stay_form
-#   - active_loop: stay_form
-#   - slot_was_set:
-#     - checkin_date: '2023-08-06'
-#   - slot_was_set:
-#     - checkin_date_dummy: '2023-08-06T00:00:00.000-07:00'
-#   - slot_was_set:
-#     - requested_slot: checkout_date
-#   - intent: inform
-#     entities:
-#     - time: '2023-08-07T00:00:00.000-07:00'
-#   - slot_was_set:
-#     - checkout_date: '2023-08-07T00:00:00.000-07:00'
-#   - action: stay_form
-#   - slot_was_set:
-#     - checkout_date: '2023-08-07'
-#   - slot_was_set:
-#     - requested_slot: null
-#   - active_loop: null
-#   - action: action_calculate_num_nights
-#   - slot_was_set:
-#     - num_nights: 1
-#   - action: utter_stay_form
-#   - action: room_type_form
-#   - active_loop: room_type_form
-#   - slot_was_set:
-#     - requested_slot: num_single_rooms
-#   - intent: inform
-#     entities:
-#     - number: 4
-#   - slot_was_set:
-#     - num_single_rooms: 4
-#   - action: room_type_form
-#   - slot_was_set:
-#     - num_single_rooms: 4
-#   - slot_was_set:
-#     - requested_slot: num_double_rooms
-#   - intent: inform
-#     entities:
-#     - number: 2
-#   - slot_was_set:
-#     - num_double_rooms: 2
-#   - action: room_type_form
-#   - slot_was_set:
-#     - num_double_rooms: 2
-#   - slot_was_set:
-#     - requested_slot: null
-#   - active_loop: null
-#   - action: utter_num_room_types
-#   - action: utter_ask_check_availability
-#   - intent: affirm
-#   - action: action_check_rooms
-#   - slot_was_set:
-#     - room_proposal: false
-#   - action: utter_change_stay_info
-#   - intent: change_num_single_rooms
-#   - action: action_reset_num_single_rooms
-#   - slot_was_set:
-#     - num_single_rooms: null
-#   - action: room_type_form
-#   - active_loop: room_type_form
-#   - slot_was_set:
-#     - num_double_rooms: 2
-#   - slot_was_set:
-#     - requested_slot: num_single_rooms
-#   - intent: inform
-#     entities:
-#     - number: 0
-#   - slot_was_set:
-#     - num_single_rooms: 0
-#   - action: room_type_form
-#   - slot_was_set:
-#     - num_single_rooms: 0
-#   - slot_was_set:
-#     - requested_slot: null
-#   - active_loop: null
-#   - action: utter_num_room_types
-#   - action: utter_ask_check_availability
-#   - intent: affirm
-#   - action: action_check_rooms
-#   - slot_was_set:
-#     - room_proposal: false
-#   - action: utter_change_stay_info
-
-- story: Utter confirmation email
-  steps:
-  - active_loop: email_form
-  - slot_was_set:
-    - requested_slot: null
-  - active_loop: null
-  - action: action_send_email_confirmation
-  - action: utter_confirmation_by_email
-  - action: utter_anything_else
-  - intent: deny
-  - action: utter_goodbye
-
-- story: interactive_story_1
+- story: interactive_story_10
   steps:
   - intent: greet
   - action: utter_introduction_ebutler
@@ -1224,64 +1025,11 @@ stories:
     - requested_slot: null
   - active_loop: null
 
-- story: interactive_story_1
+
+- story: interactive_story_11
   steps:
-  - intent: out_of_scope
-  - action: utter_out_of_scope
-  - intent: handover_to_human
-  - action: utter_handover_to_human
-  - action: utter_goodbye
   - intent: PROMO
   - action: action_PROMO
-  - intent: PROMO
-  - action: action_PROMO
-  - intent: PROMO
-  - action: action_PROMO
-  - intent: PROMO
-  - action: action_PROMO
-  - action: action_check_rooms
-  - intent: affirm
-  - action: action_default_fallback
-  - intent: PROMO
-  - action: action_PROMO
-  - action: action_check_rooms
-  - intent: PROMO
-  - action: action_PROMO
-  - action: action_check_rooms
-  - intent: PROMO
-  - action: action_PROMO
-  - intent: PROMO
-  - action: action_PROMO
-  - slot_was_set:
-    - checkin_date: '2023-12-02'
-  - slot_was_set:
-    - checkout_date: '2023-12-12'
-  - action: action_check_rooms
-  - action: action_default_fallback
-  - intent: PROMO
-  - action: action_PROMO
-  - slot_was_set:
-    - checkin_date: '2023-12-02'
-  - slot_was_set:
-    - checkout_date: '2023-12-12'
-  - slot_was_set:
-    - num_single_rooms: '1'
-  - slot_was_set:
-    - num_double_rooms: '2'
-  - action: action_check_rooms
-  - action: action_default_fallback
-  - intent: PROMO
-  - action: action_PROMO
-  - slot_was_set:
-    - checkin_date: '2023-12-02'
-  - slot_was_set:
-    - checkout_date: '2023-12-12'
-  - slot_was_set:
-    - num_single_rooms: 1
-  - slot_was_set:
-    - num_double_rooms: '2'
-  - action: action_check_rooms
-  - action: action_default_fallback
   - intent: PROMO
   - action: action_PROMO
   - slot_was_set:
@@ -1302,35 +1050,48 @@ stories:
   - active_loop: name_form
   - slot_was_set:
     - requested_slot: first_name
-  - intent: inform
+  - intent: stop
   - slot_was_set:
-    - first_name: Donald
+    - first_name: stop
   - action: name_form
   - slot_was_set:
     - requested_slot: last_name
-  - intent: nlu_fallback
+  - intent: stop
   - slot_was_set:
-    - last_name: Trump
+    - last_name: stop
   - action: name_form
   - slot_was_set:
     - requested_slot: null
   - active_loop: null
   - action: utter_name_values
   - action: utter_ask_contact_channel
-  - intent: inform_mobile_number
-  - action: mobile_number_form
-  - active_loop: mobile_number_form
+  - intent: use_email
+  - action: email_form
+  - active_loop: email_form
   - slot_was_set:
-    - requested_slot: mobile_number
-  - intent: inform
-    entities:
-    - phone-number: (+41) 781234567
-  - slot_was_set:
-    - mobile_number: (+41) 781234567
-  - action: mobile_number_form
+    - requested_slot: email
+  - intent: stop
+  - action: action_deactivate_loop
+  - active_loop: null
   - slot_was_set:
     - requested_slot: null
+  - action: action_back_to_greet
+  - action: utter_greet
+  - intent: PROMO
+  - action: action_PROMO
+  - slot_was_set:
+    - checkin_date: '2023-12-02'
+  - slot_was_set:
+    - checkout_date: '2023-12-12'
+  - slot_was_set:
+    - num_single_rooms: 1
+  - slot_was_set:
+    - num_double_rooms: 2
+  - slot_was_set:
+    - room_proposal: true
+  - action: utter_ask_proceed_booking
+  - intent: stop
+  - action: action_deactivate_loop
   - active_loop: null
-  - action: utter_mobile_number
-  - action: utter_confirmation_sms
-  - action: utter_anything_else
+  - slot_was_set:
+    - requested_slot: null

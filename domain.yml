@@ -36,18 +36,20 @@ intents:
 - stop
 - use_email
 actions:
-- utter_goodbye
-- utter_handover_to_human
+- utter_ask_contact_channel
 - utter_ask_proceed_booking
 - utter_name_values
+- action_check_rooms
+- action_back_to_greet
+- utter_need_guest_info_for_booking
+- action_PROMO
+- utter_greet
+- utter_goodbye
+- utter_handover_to_human
 - utter_mobile_number
 - utter_anything_else
-- action_check_rooms
-- utter_need_guest_info_for_booking
 - utter_confirmation_sms
 - utter_out_of_scope
-- action_PROMO
-- utter_ask_contact_channel
 - utter_special_room_prices
 - utter_stay_form
 - utter_num_room_types
@@ -69,7 +71,6 @@ actions:
 - action_ask_contact_channel
 - action_set_contact_channel
 - utter_address
-- action_back_to_greet
 - action_continue
 - action_custom_fallback
 - action_reset_num_guests
@@ -89,11 +90,6 @@ entities:
 - num_guests
 - time
 - number
-# - room_type:
-#     roles:
-#     - single_room
-#     - double_room
-#     - unspecified
 - amount
 - contact_channel
 responses:
